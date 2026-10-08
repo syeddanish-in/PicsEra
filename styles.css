@@ -23,7 +23,7 @@ body {
     background: var(--bg);
     color: var(--ink);
     line-height: 1.6;
-    padding: 20px;
+    padding: 0 20px;
 }
 
 a {
@@ -48,11 +48,14 @@ header {
     background: var(--bg);
     padding: 20px 0;
     border-bottom: 1px solid var(--line);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 nav {
     max-width: 1200px;
-    margin: 0 auto;
     padding: 1rem 1.5rem;
     display: flex;
     align-items: center;
@@ -65,6 +68,10 @@ nav {
     color: var(--ink);
 }
 
+.logo span {
+    color: var(--ember);
+}
+
 .nav-links {
     display: flex;
     gap: 1rem;
@@ -73,5 +80,10 @@ nav {
 .nav-links a {
     font-size: 1rem;
     color: var(--ink);
-    transition: color 0.3s;
+    transition: color 0.15s;
 }
+
+.nav-links a:hover {
+    color: var(--ember);
+}
+
