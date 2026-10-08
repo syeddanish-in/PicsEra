@@ -276,6 +276,20 @@ nav {
     align-items: center;
 }
 
+/* Tablet */
+@media (max-width: 768px) {
+    .about {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .about {
+        grid-template-columns: 1fr;
+    }
+}
+
 .about-image {
     overflow: hidden;
     border-radius: 0.5rem;
@@ -326,4 +340,99 @@ nav {
 .text-link:hover {
     color: var(--clay);
     border-color: var(--clay);
+}
+
+/* Contact Form */
+
+#contact {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+#contact h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.service-selection p {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+label {
+    font-weight: 600;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font: inherit;
+    background: #fff;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--ember);
+}
+
+
+
+.radio-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.radio-group input {
+    width: auto;
+}
+
+.radio-group label {
+    font-weight: normal;
+}
+
+/* Hide dropdowns */
+.option {
+    display: none;
+}
+
+/* Button */
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background: var(--ember);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background: var(--clay);
 }

@@ -134,8 +134,7 @@
                         alt="Warm and detailed photography" class="artwork-image">
                     <div class="artwork-overlay">
                         <h3>Wellness Essentials</h3>
-                        <p>A clean product photograph showcasing multivitamin packaging with a simple and professional
-                            presentation.</p>
+                        <p>A serene portrait capturing the essence of the subject in a calm and composed manner.</p>
                     </div>
                 </div>
 
@@ -244,53 +243,57 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="contact-section">
+        <section id="contact">
+            <h2>Book a Shoot</h2>
 
-            <div class="contact-container">
-                <div class="contact-content">
-                    <p class="section-label">GET IN TOUCH</p>
-                    <h2>Book a Shoot</h2>
-                    <p>Planning an event, portrait session, or special occasion? Get in touch and let's create something
-                        memorable together.</p>
-                    <div class="contact-info">
-                        <p> <strong>Email:</strong> inquiry@picsera.com</p>
-                    </div>
+            <form id="booking-form" novalidate>
+                <!-- Contact Details Group -->
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name">
                 </div>
 
-                <form class="contact-form" action="#" method="post">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email address">
+                </div>
 
-                    <!-- Name Field -->
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" placeholder="Your name" required>
+                <!-- Service Options Group -->
+                <div class="service-selection">
+                    <p id="photography-type">Photography Type</p>
+
+                    <!-- Radio Choices -->
+                    <div class="radio-group">
+                        <input type="radio" id="portrait" name="type" value="portrait">
+                        <label for="portrait">Portrait</label>
+
+                        <input type="radio" id="product" name="type" value="product">
+                        <label for="product">Product</label>
+
+                        <input type="radio" id="event" name="type" value="event">
+                        <label for="event">Event</label>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
-                    </div>
 
+                    <!-- Budget & Details Group -->
                     <div class="form-group">
-                        <label for="service">Type of Shoot</label>
-
-                        <select id="service" name="service" required>
-                            <option>Select a service</option>
-                            <option>Event Photography</option>
-                            <option>Portrait Photography</option>
-                            <option>Wedding Photography</option>
-                            <option>Commercial Photography</option>
+                        <label for="budget">Budget</label>
+                        <select id="budget" name="budget">
+                            <option value="" disabled selected>Select your budget range</option>
+                            <option value="under-100">Below $100</option>
+                            <option value="100-500">$100 - $500</option>
+                            <option value="500-1000">$500 - $1,000</option>
+                            <option value="over-1000">Above $1,000</option>
                         </select>
                     </div>
 
-                    <div class="form-group"> <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="5" placeholder="Tell us about your shoot..."
-                            required></textarea>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5"
+                            placeholder="Tell us more about your vision..."></textarea>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit" class="contact-btn">Send Inquiry</button>
-                </form>
-            </div>
+                    <button type="submit">Send Message</button>
+            </form>
         </section>
 </body>
 <footer class="footer">
