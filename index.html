@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicsEra - Photography Portfolio Website</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <a href="#" class="logo">Pics<span>Era</span></a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </header>
+    <main>
+        <section class="hero">
+            <h1>Every moment. Every guest. <span>Covered.</span></h1>
+            <p class="subtitle">Capture the moment, preserve the memory.</p>
+        </section>
+        <section class="gallery">
+            <h2>Featured Photographs</h2>
+            <div class="artwork-grid">
+                <div class="artwork-item">
+                    <img src="images/collections/allyson-beaucourt-m_uSWBJWr0s-unsplash.jpg" alt="Portfolio 1"
+                        class="artwork-image">
+                    <h3>Portfolio 1</h3>
+                </div>
+                <div class="artwork-item">
+                    <img src="images/collections/anna-pelzer-IGfIGP5ONV0-unsplash.jpg" alt="Portfolio 2"
+                        class="artwork-image">
+                    <h3>Portfolio 2</h3>
+                </div>
+                <div class="artwork-item">
+                    <img src="images/collections/giorgio-trovato-K62u25Jk6vo-unsplash.jpg" alt="Portfolio 3"
+                        class="artwork-image">
+                    <h3>Portfolio 3</h3>
+                </div>
+                <!-- Add more artwork items as needed -->
+            </div>
+        </section>
+        <!-- ABOUT -->
+
+        <section class="about" id="about">
+            <div class="about-image">
+                <img src="images/collections/vitaly-gariev-VnhCfo8Fkes-unsplash.jpg" alt="Professional Photography">
+            </div>
+            <div class="about-content">
+                <p class="section-label">About PicsEra</p>
+                <h2>We capture moments that matter.</h2>
+                <p>PicsEra is a Dubai-based photography and video service
+                    dedicated to capturing genuine moments, special
+                    celebrations and professional stories.</p>
+                <a href="#contact" class="text-link">Book a Shoot →</a>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section">
+
+            <div class="contact-container">
+                <div class="contact-content">
+                    <p class="section-label">GET IN TOUCH</p>
+                    <h2>Book a Shoot</h2>
+                    <p>Planning an event, portrait session, or special occasion? Get in touch and let's create something
+                        memorable together.</p>
+                    <div class="contact-info">
+                        <p> <strong>Email:</strong>hello@yourphotography.com</p>
+                    </div>
+                </div>
+
+                <form class="contact-form" action="#" method="post">
+
+                    <!-- Name Field -->
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service">Type of Shoot</label>
+
+                        <select id="service" name="service" required>
+                            <option>Select a service</option>
+                            <option>Event Photography</option>
+                            <option>Portrait Photography</option>
+                            <option>Wedding Photography</option>
+                            <option>Commercial Photography</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group"> <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Tell us about your shoot..."
+                            required></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="contact-btn">Send Inquiry</button>
+                </form>
+            </div>
+        </section>
+</body>
+<footer class="footer">
+    <div class="footer-brand">
+        <img src="images/logo.png" alt="logo">
+        <span>Your Photography</span>
+    </div>
+    <nav aria-label="Footer navigation">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    <p>&copy; Copyright 2026 Your Photography. All rights reserved.</p>
+</footer>
+
+</html>
