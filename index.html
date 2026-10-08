@@ -246,7 +246,7 @@
         <section id="contact">
             <h2>Book a Shoot</h2>
 
-            <form id="booking-form" novalidate>
+            <form id="booking-form">
                 <!-- Contact Details Group -->
                 <div class="form-group">
                     <label for="name">Name</label>
@@ -288,26 +288,37 @@
 
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="5"
-                            placeholder="Tell us more about your vision..."></textarea>
+                        <textarea id="message" name="message" rows="3"
+                            placeholder="Tell us more about your project..."></textarea>
                     </div>
 
                     <button type="submit">Send Message</button>
             </form>
         </section>
 </body>
+
 <footer class="footer">
+
+    <!-- Logo -->
     <div class="footer-brand">
-        <img src="images/logo.png" alt="logo">
-        <span>Your Photography</span>
+        <a href="#home" class="logo" aria-label="PicsEra home">
+            Pics<span>Era</span>
+        </a>
     </div>
-    <nav aria-label="Footer navigation">
-        <a href="#home">Home</a>
+
+    <!-- Footer Navigation -->
+    <nav class="footer-nav" aria-label="Footer navigation">
         <a href="#about">About</a>
         <a href="#gallery">Gallery</a>
         <a href="#contact">Contact</a>
+        <a href="#home">Back to Top</a>
     </nav>
-    <p>&copy; Copyright 2026 Your Photography. All rights reserved.</p>
+
+    <!-- Copyright -->
+    <p class="footer-copyright">
+        &copy; Copyright 2026 PicsEra. All rights reserved.
+    </p>
+
 </footer>
 
 </html>
