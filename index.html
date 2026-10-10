@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <header class="header">
+    <header>
         <a href="#home" class="logo">Pics<span>Era</span></a>
         <nav>
             <ul class="nav-links">
@@ -226,99 +226,101 @@
 
             </div>
         </section>
-        <!-- ABOUT -->
+    </main>
+    <!-- ABOUT -->
 
-        <section class="about" id="about">
-            <div class="about-image">
-                <img src="images/collections/vitaly-gariev-VnhCfo8Fkes-unsplash.jpg" alt="Photography portfolio">
+    <section class="about" id="about">
+        <div class="about-image">
+            <img src="images/collections/vitaly-gariev-VnhCfo8Fkes-unsplash.jpg" alt="Photography portfolio">
+        </div>
+
+        <div class="about-content">
+            <p class="section-label">About PicsEra</p>
+            <h2>Stories told through photography.</h2>
+            <p> PicsEra is a photography portfolio dedicated to capturing
+                emotions, people, places, and the beauty of everyday moments.
+                Each photograph is created to preserve a story and turn
+                memorable moments into lasting visual experiences. </p>
+            <a href="#contact" class="text-link">Let's Create Together →</a>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Book a Shoot</h2>
+
+        <form id="booking-form">
+            <!-- Contact Details Group -->
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
             </div>
 
-            <div class="about-content">
-                <p class="section-label">About PicsEra</p>
-                <h2>Stories told through photography.</h2>
-                <p> PicsEra is a photography portfolio dedicated to capturing
-                    emotions, people, places, and the beauty of everyday moments.
-                    Each photograph is created to preserve a story and turn
-                    memorable moments into lasting visual experiences. </p>
-                <a href="#contact" class="text-link">Let's Create Together →</a>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email address" required>
             </div>
-        </section>
 
-        <section id="contact">
-            <h2>Book a Shoot</h2>
+            <!-- Service Options Group -->
+            <div class="service-selection">
+                <p id="photography-type">Photography Type</p>
 
-            <form id="booking-form">
-                <!-- Contact Details Group -->
+                <!-- Radio Choices -->
+                <div class="radio-group">
+                    <input type="radio" id="portrait" name="type" value="portrait" required>
+                    <label for="portrait">Portrait</label>
+
+                    <input type="radio" id="product" name="type" value="product" required>
+                    <label for="product">Product</label>
+
+                    <input type="radio" id="event" name="type" value="event" required>
+                    <label for="event">Event</label>
+                </div>
+
+                <!-- Budget & Details Group -->
                 <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                    <label for="budget">Budget</label>
+                    <select id="budget" name="budget" required>
+                        <option value="" disabled selected>Select your budget range</option>
+                        <option value="under-100">Below $100</option>
+                        <option value="100-500">$100 - $500</option>
+                        <option value="500-1000">$500 - $1,000</option>
+                        <option value="over-1000">Above $1,000</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="3"
+                        placeholder="Tell us more about your service needs..."></textarea>
                 </div>
 
-                <!-- Service Options Group -->
-                <div class="service-selection">
-                    <p id="photography-type">Photography Type</p>
-
-                    <!-- Radio Choices -->
-                    <div class="radio-group">
-                        <input type="radio" id="portrait" name="type" value="portrait" required>
-                        <label for="portrait">Portrait</label>
-
-                        <input type="radio" id="product" name="type" value="product" required>
-                        <label for="product">Product</label>
-
-                        <input type="radio" id="event" name="type" value="event" required>
-                        <label for="event">Event</label>
-                    </div>
-
-                    <!-- Budget & Details Group -->
-                    <div class="form-group">
-                        <label for="budget">Budget</label>
-                        <select id="budget" name="budget" required>
-                            <option value="" disabled selected>Select your budget range</option>
-                            <option value="under-100">Below $100</option>
-                            <option value="100-500">$100 - $500</option>
-                            <option value="500-1000">$500 - $1,000</option>
-                            <option value="over-1000">Above $1,000</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="3"
-                            placeholder="Tell us more about your service needs..."></textarea>
-                    </div>
-
-                    <button type="submit">Send Message</button>
-            </form>
-        </section>
-        <footer class="footer">
-
-            <!-- Logo -->
-            <div class="footer-brand">
-                <a href="#home" class="logo" aria-label="PicsEra home">
-                    Pics<span>Era</span>
-                </a>
+                <button type="submit">Send Message</button>
             </div>
+        </form>
+    </section>
+    <footer class="footer">
 
-            <!-- Footer Navigation -->
-            <nav class="footer-nav" aria-label="Footer navigation">
-                <a href="#about">About</a>
-                <a href="#portfolio">Gallery</a>
-                <a href="#contact">Contact</a>
-                <a href="#home">Back to Top</a>
-            </nav>
+        <!-- Logo -->
+        <div class="footer-brand">
+            <a href="#home" class="logo" aria-label="PicsEra home">
+                Pics<span>Era</span>
+            </a>
+        </div>
 
-            <!-- Copyright -->
-            <p class="footer-copyright">
-                &copy; Copyright 2026 PicsEra. All rights reserved.
-            </p>
+        <!-- Footer Navigation -->
+        <nav class="footer-nav" aria-label="Footer navigation">
+            <a href="#about">About</a>
+            <a href="#portfolio">Gallery</a>
+            <a href="#contact">Contact</a>
+            <a href="#home">Back to Top</a>
+        </nav>
 
-        </footer>
+        <!-- Copyright -->
+        <p class="footer-copyright">
+            &copy; Copyright 2026 PicsEra. All rights reserved.
+        </p>
+
+    </footer>
 </body>
 
 

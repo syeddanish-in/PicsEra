@@ -18,18 +18,6 @@
         --font-heading: Georgia, "Times New Roman", Times, serif;
     }
 
-    .header {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: var(--bg-heading);
-        padding: 20px 20px;
-        border-bottom: 1px solid var(--line);
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
 
     /*Base Styles*/
     body {
@@ -59,7 +47,7 @@
         position: sticky;
         top: 0;
         z-index: 10;
-        background: var(--bg);
+        background: var(--bg-heading);
         padding: 20px 0;
         border-bottom: 1px solid var(--line);
 
@@ -68,7 +56,7 @@
         justify-content: space-between;
     }
 
-    nav {
+    header nav {
         max-width: 1200px;
         padding: 1rem 1.5rem;
         display: flex;
@@ -78,6 +66,7 @@
 
     .logo {
         font-size: 1.5rem;
+        padding: 0.5rem 1rem;
         font-weight: bold;
         color: var(--ink);
     }
@@ -397,17 +386,6 @@
 
     }
 
-    .about-image {
-        overflow: hidden;
-        border-radius: 0.5rem;
-    }
-
-    .about-image img {
-        width: 100%;
-        height: 450px;
-        object-fit: cover;
-    }
-
     .about-content {
         max-width: 550px;
     }
@@ -520,11 +498,6 @@
 
     .radio-group label {
         font-weight: normal;
-    }
-
-    /* Hide dropdowns */
-    .option {
-        display: none;
     }
 
     /* Button */
