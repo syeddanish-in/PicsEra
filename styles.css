@@ -283,11 +283,27 @@ nav {
     }
 }
 
-/* Mobile */
+/* Mobile: One photo per row */
 @media (max-width: 480px) {
-    .about {
+    .artwork-grid {
         grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-auto-rows: 240px;
+        gap: 12px;
     }
+
+    .artwork-item:nth-child(n) {
+        grid-column: 1;
+        grid-row: auto;
+        height: 240px;
+    }
+
+    .artwork-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
 }
 
 .about-image {
