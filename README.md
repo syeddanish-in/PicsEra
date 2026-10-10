@@ -1,55 +1,50 @@
-# PicsEra – Photography Portfolio
+# PicsEra – Photography Portfolio Website
 
-PicsEra is a responsive, single-page photography portfolio website built using **HTML5 and CSS3**. It showcases photography through a visually engaging image gallery, an About section, and a contact form for booking photography sessions.
+PicsEra is a responsive, single-page photography portfolio website built using **HTML5 and CSS3**. It showcases photography through an image gallery, an About section, and a contact form for booking photography sessions.
 
 ## ✨ Features
 
-- **Responsive Design** – Supports desktop, tablet, and mobile screens.
-- **Photography Gallery** – Displays photographs in a structured, visually appealing layout.
-- **CSS Grid** – Creates the gallery layout and positions artwork.
-- **Flexbox** – Aligns navigation, content, and form elements.
-- **Image Optimization** – Uses `object-fit: cover` for consistent image presentation.
-- **Hero Section** – Introduces the photography portfolio with a prominent visual.
-- **About Section** – Provides information about the photographer.
-- **Contact Form** – Allows visitors to inquire about photography services or book a shoot.
-- **Custom CSS Variables** – Maintains consistent colors and styling.
-- **Semantic HTML5** – Uses meaningful elements to structure the webpage.
-- **Accessible Navigation** – Provides navigation links to page sections.
-- **No CSS Frameworks** – Built with plain HTML5 and CSS3.
+- Responsive photography gallery for desktop, tablet, and mobile.
+- CSS Grid for gallery layouts.
+- Flexbox for navigation and content alignment.
+- `object-fit: cover` for consistent image sizing.
+- Hero section with photography-focused content.
+- About section introducing the photographer.
+- Contact form for photography inquiries and bookings.
+- Custom CSS variables for consistent styling.
+- Semantic HTML5 elements.
+- Responsive layouts designed to prevent horizontal scrolling.
+- No frameworks or external CSS libraries.
 
 ## 🛠️ Technologies Used
 
 - HTML5
 - CSS3
-- CSS Grid
-- Flexbox
+- CSS Grid and Flexbox
 - Responsive Media Queries
 - Git and GitHub
 
-## 📂 Project Structure
+## 📁 Project Structure
 
 ```text
 PicsEra/
 ├── index.html
-├── style.css
+├── styles.css
 ├── images/
-│   └── photography images
+│   └── collections/
+│       └── photography images
 └── README.md
 ```
-
-*Note: Update the filenames and folders above if your actual project structure differs.*
 
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/syeddanish-in/PicsEra.git
 ```
 
-### 2. Open the project
-
-Navigate to the project directory:
+### 2. Navigate to the project directory
 
 ```bash
 cd PicsEra
@@ -57,7 +52,7 @@ cd PicsEra
 
 ### 3. Run the website
 
-Open `index.html` in your browser, or use the **Live Server** extension in Visual Studio Code for local development.
+Open `index.html` in your browser, or use the Live Server extension in Visual Studio Code.
 
 ## 📱 Responsive Design
 
@@ -65,9 +60,7 @@ PicsEra uses CSS media queries to adapt its layout to different screen sizes.
 
 - **Desktop:** Multi-column photography gallery.
 - **Tablet:** Adapted gallery and content layout.
-- **Mobile:** Single-column gallery and vertically stacked sections.
-
-The layout is designed to prevent unwanted horizontal scrolling across devices.
+- **Mobile:** Single-column gallery and stacked content sections.
 
 ## 📋 Project Requirements
 
@@ -76,23 +69,23 @@ The layout is designed to prevent unwanted horizontal scrolling across devices.
 - Working navigation links.
 - Global `box-sizing: border-box`.
 - Practical use of CSS Grid and Flexbox.
-- Responsive layouts for mobile, tablet, and desktop.
+- Support for mobile, tablet, and desktop.
 - Small, meaningful Git commits.
 - No external CSS frameworks or libraries.
 
 ## 🤝 Development and Collaboration
 
-This project was developed as part of a team assignment focused on practicing HTML5, CSS3, responsive web design, and Git version control.
+This project was developed as part of a team assignment to practice HTML5, CSS3, responsive web design, and Git version control.
 
 AI tools such as ChatGPT may be used during development. All code is reviewed and understood by the team.
 
 ## 🔮 Future Improvements
 
 - Add a mobile-friendly navigation menu.
-- Improve accessibility and keyboard navigation.
+- Improve keyboard accessibility.
 - Add photography category filters.
-- Enhance image loading performance.
-- Connect the contact form to a backend or email service.
+- Optimize image loading performance.
+- Connect the contact form to an email service or backend.
 
 ## 📄 License
 
