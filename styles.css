@@ -7,14 +7,28 @@
 
     /*Design Token*/
     :root {
+        --bg-heading: #ffffff;
         --bg: #f5f5f5;
         --ink: #333;
         --ink-soft: #666;
         --ember: #ff4500;
         --clay: #ff7f50;
         --line: #ddd;
-        --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --font-body: Arial, sans-serif;
         --font-heading: Georgia, "Times New Roman", Times, serif;
+    }
+
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--bg-heading);
+        padding: 20px 20px;
+        border-bottom: 1px solid var(--line);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     /*Base Styles*/
@@ -23,7 +37,7 @@
         background: var(--bg);
         color: var(--ink);
         line-height: 1.6;
-        padding: 0 20px;
+        padding: 0;
     }
 
     a {
