@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PicsEra - Photography Portfolio Website</title>
+    <title>PicsEra | Photography Portfolio & Booking.</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <header>
-        <a href="#" class="logo">Pics<span>Era</span></a>
+        <a href="#home" class="logo">Pics<span>Era</span></a>
         <nav>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
@@ -22,7 +22,8 @@
     </header>
     <main>
         <section class="hero" id="home">
-            <img src="images/collections/mesut-kaya-eOcyhe5-9sQ-unsplash.jpg" alt="Landing Page" class="hero-image">
+            <img src="images/collections/mesut-kaya-eOcyhe5-9sQ-unsplash.jpg"
+                alt="Landing Page of photography portfolio" class="hero-image">
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <p class="hero-label">PICSERA PHOTOGRAPHY</p>
@@ -31,7 +32,7 @@
                 <a href="#contact" class="hero-btn">Book a Shoot</a>
             </div>
         </section>
-        <section class="gallery">
+        <section class="gallery" id="portfolio">
             <h2>Featured Photographs</h2>
             <div class="artwork-grid">
 
@@ -250,12 +251,12 @@
                 <!-- Contact Details Group -->
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Enter your full name">
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email address">
+                    <input type="email" id="email" name="email" placeholder="Enter your email address" required>
                 </div>
 
                 <!-- Service Options Group -->
@@ -264,20 +265,20 @@
 
                     <!-- Radio Choices -->
                     <div class="radio-group">
-                        <input type="radio" id="portrait" name="type" value="portrait">
+                        <input type="radio" id="portrait" name="type" value="portrait" required>
                         <label for="portrait">Portrait</label>
 
-                        <input type="radio" id="product" name="type" value="product">
+                        <input type="radio" id="product" name="type" value="product" required>
                         <label for="product">Product</label>
 
-                        <input type="radio" id="event" name="type" value="event">
+                        <input type="radio" id="event" name="type" value="event" required>
                         <label for="event">Event</label>
                     </div>
 
                     <!-- Budget & Details Group -->
                     <div class="form-group">
                         <label for="budget">Budget</label>
-                        <select id="budget" name="budget">
+                        <select id="budget" name="budget" required>
                             <option value="" disabled selected>Select your budget range</option>
                             <option value="under-100">Below $100</option>
                             <option value="100-500">$100 - $500</option>
@@ -289,36 +290,37 @@
                     <div class="form-group">
                         <label for="message">Message</label>
                         <textarea id="message" name="message" rows="3"
-                            placeholder="Tell us more about your project..."></textarea>
+                            placeholder="Tell us more about your service needs..."></textarea>
                     </div>
 
                     <button type="submit">Send Message</button>
             </form>
         </section>
+        <footer class="footer">
+
+            <!-- Logo -->
+            <div class="footer-brand">
+                <a href="#home" class="logo" aria-label="PicsEra home">
+                    Pics<span>Era</span>
+                </a>
+            </div>
+
+            <!-- Footer Navigation -->
+            <nav class="footer-nav" aria-label="Footer navigation">
+                <a href="#about">About</a>
+                <a href="#portfolio">Gallery</a>
+                <a href="#contact">Contact</a>
+                <a href="#home">Back to Top</a>
+            </nav>
+
+            <!-- Copyright -->
+            <p class="footer-copyright">
+                &copy; Copyright 2026 PicsEra. All rights reserved.
+            </p>
+
+        </footer>
 </body>
 
-<footer class="footer">
 
-    <!-- Logo -->
-    <div class="footer-brand">
-        <a href="#home" class="logo" aria-label="PicsEra home">
-            Pics<span>Era</span>
-        </a>
-    </div>
-
-    <!-- Footer Navigation -->
-    <nav class="footer-nav" aria-label="Footer navigation">
-        <a href="#about">About</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#contact">Contact</a>
-        <a href="#home">Back to Top</a>
-    </nav>
-
-    <!-- Copyright -->
-    <p class="footer-copyright">
-        &copy; Copyright 2026 PicsEra. All rights reserved.
-    </p>
-
-</footer>
 
 </html>
