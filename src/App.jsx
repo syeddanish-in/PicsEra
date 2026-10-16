@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Header from './components/Header.jsx';
 import Hero from './components/Hero.jsx';
+import MainContent from './components/MainContent.jsx';
 
 function App() {
 
@@ -11,6 +12,9 @@ function App() {
 
       {/* Hero Component */}
       <Hero />
+
+      {/* Main Content Component */}
+      <MainContent />
     </div>
   )
 }
