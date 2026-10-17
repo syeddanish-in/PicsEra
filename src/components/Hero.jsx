@@ -22,7 +22,7 @@ function Hero() {
         <h1 className="mb-4 text-4xl font-bold md:text-6xl">
           Every moment.
           <br />
-          Every guest.{" "}
+          Every story.{" "}
           <span className="text-orange-400">Covered.</span>
         </h1>
 
