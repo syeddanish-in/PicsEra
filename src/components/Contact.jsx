@@ -1,6 +1,10 @@
+
 import React, { useState } from 'react';
 
-export default function Contact({ totalPrintsSelected = 0, selectedPrintsSummary = [] }) {
+export default function Contact({
+    totalPrintsSelected = 0,
+    selectedPrintsSummary = [],
+}) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -11,8 +15,7 @@ export default function Contact({ totalPrintsSelected = 0, selectedPrintsSummary
     const [submitted, setSubmitted] = useState(false);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
@@ -20,132 +23,131 @@ export default function Contact({ totalPrintsSelected = 0, selectedPrintsSummary
         setSubmitted(true);
     };
 
+    const inputStyle =
+        'w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100';
+
     return (
-        <section id="contact" className="py-12 sm:py-16 lg:py-20 bg-surface">
-            <div className="max-w-xl mx-auto px-4 sm:px-6">
-                <div className="bg-white rounded-xl shadow-sm border border-line p-6 sm:p-8 md:p-10">
-                    <h2 className="font-heading text-2xl sm:text-3xl text-center text-ink font-normal mb-2">
+        <section id="contact" className="bg-surface px-4 py-16 sm:py-20">
+            <div className="mx-auto max-w-3xl">
+                <div className="mb-8 text-center">
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-orange-600">
+                        Let's work together
+                    </p>
+                    <h2 className="font-heading text-3xl text-ink sm:text-4xl">
                         Book a Shoot
                     </h2>
-                    <p className="text-center text-xs sm:text-sm text-ink-soft mb-6 sm:mb-8">
-                        Tell us about your project or print inquiry and we will get back to you within 24 hours.
+                    <p className="mt-3 text-sm leading-6 text-ink-soft">
+                        Tell us about your project. We'll get back to you
+                        within 24 hours.
                     </p>
+                </div>
 
-                    {/* Dynamic badge if user has selected prints using the QuantityStepper */}
+                <div className="rounded-2xl border border-line bg-white p-5 shadow-md sm:p-8">
                     {totalPrintsSelected > 0 && (
-                        <div className="mb-6 p-3.5 bg-orange-50 border border-orange-200 rounded-lg text-xs sm:text-sm text-amber-900 flex items-start gap-2.5">
-                            <span className="text-ember text-base">✦</span>
-                            <div>
-                                <p className="font-semibold text-ember">
-                                    {totalPrintsSelected} Archival Print{totalPrintsSelected > 1 ? 's' : ''} Selected
-                                </p>
-                                <p className="text-xs text-stone-600 mt-0.5">
-                                    Your selected prints will be attached to your booking inquiry:
-                                    {selectedPrintsSummary.map((item) => ` ${item.title} (${item.count}x)`).join(',')}
-                                </p>
-                            </div>
+                        <div className="mb-6 rounded-lg border border-orange-200 bg-orange-50 p-4">
+                            <p className="font-semibold text-orange-800">
+                                ✦ {totalPrintsSelected} print(s) selected
+                            </p>
+                            <p className="mt-1 text-sm text-gray-600">
+                                {selectedPrintsSummary
+                                    .map((item) => `${item.title} (${item.count}x)`)
+                                    .join(', ')}
+                            </p>
                         </div>
                     )}
 
                     {submitted ? (
-                        <div className="text-center py-8">
-                            <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
-                                ✓
-                            </div>
-                            <h3 className="text-lg font-bold text-ink">Thank you, {formData.name || 'there'}!</h3>
-                            <p className="text-sm text-ink-soft mt-1">
-                                Your shoot inquiry has been received. We will be in touch shortly via {formData.email}.
+                        <div className="py-8 text-center" role="status">
+                            <div className="text-4xl text-green-600">✓</div>
+                            <h3 className="mt-3 text-xl font-semibold text-gray-900">
+                                Thank you, {formData.name}!
+                            </h3>
+                            <p className="mt-2 text-sm text-gray-600">
+                                Your inquiry is ready. We will contact you at{' '}
+                                {formData.email}.
                             </p>
                             <button
                                 type="button"
                                 onClick={() => setSubmitted(false)}
-                                className="mt-6 px-4 py-2 text-xs font-semibold text-ember hover:text-clay underline"
+                                className="mt-5 rounded-lg bg-orange-600 px-5 py-3 font-semibold text-white hover:bg-orange-700"
                             >
-                                Send another inquiry
+                                Send Another Inquiry
                             </button>
                         </div>
                     ) : (
-                        <form id="booking-form" onSubmit={handleSubmit} className="space-y-5">
-                            {/* Name */}
-                            <div className="flex flex-col gap-1.5">
-                                <label htmlFor="name" className="text-sm font-semibold text-ink">
-                                    Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="Enter your full name"
-                                    required
-                                    className="w-full px-3.5 py-2.5 rounded-md border border-line bg-white text-ink text-sm placeholder:text-stone-400 focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember transition-colors"
-                                />
-                            </div>
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            <div className="grid gap-5 sm:grid-cols-2">
+                                <div>
+                                    <label htmlFor="name" className="mb-2 block text-sm font-semibold text-gray-800">
+                                        Full Name *
+                                    </label>
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        placeholder="Your full name"
+                                        autoComplete="name"
+                                        required
+                                        className={inputStyle}
+                                    />
+                                </div>
 
-                            {/* Email */}
-                            <div className="flex flex-col gap-1.5">
-                                <label htmlFor="email" className="text-sm font-semibold text-ink">
-                                    Email
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="Enter your email address"
-                                    required
-                                    className="w-full px-3.5 py-2.5 rounded-md border border-line bg-white text-ink text-sm placeholder:text-stone-400 focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember transition-colors"
-                                />
-                            </div>
-
-                            {/* Photography Type */}
-                            <div className="flex flex-col gap-2 pt-1">
-                                <label className="text-sm font-semibold text-ink">
-                                    Photography Type
-                                </label>
-                                <div className="flex flex-wrap gap-4 sm:gap-6 pt-0.5">
-                                    <label className="inline-flex items-center gap-2 text-sm text-ink cursor-pointer">
-                                        <input
-                                            type="radio"
-                                            name="type"
-                                            value="portrait"
-                                            checked={formData.type === 'portrait'}
-                                            onChange={handleChange}
-                                            className="accent-ember w-4 h-4"
-                                        />
-                                        <span>Portrait</span>
+                                <div>
+                                    <label htmlFor="email" className="mb-2 block text-sm font-semibold text-gray-800">
+                                        Email Address *
                                     </label>
-                                    <label className="inline-flex items-center gap-2 text-sm text-ink cursor-pointer">
-                                        <input
-                                            type="radio"
-                                            name="type"
-                                            value="product"
-                                            checked={formData.type === 'product'}
-                                            onChange={handleChange}
-                                            className="accent-ember w-4 h-4"
-                                        />
-                                        <span>Product</span>
-                                    </label>
-                                    <label className="inline-flex items-center gap-2 text-sm text-ink cursor-pointer">
-                                        <input
-                                            type="radio"
-                                            name="type"
-                                            value="event"
-                                            checked={formData.type === 'event'}
-                                            onChange={handleChange}
-                                            className="accent-ember w-4 h-4"
-                                        />
-                                        <span>Event</span>
-                                    </label>
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        placeholder="you@example.com"
+                                        autoComplete="email"
+                                        required
+                                        className={inputStyle}
+                                    />
                                 </div>
                             </div>
 
-                            {/* Budget */}
-                            <div className="flex flex-col gap-1.5">
-                                <label htmlFor="budget" className="text-sm font-semibold text-ink">
-                                    Budget
+                            <fieldset>
+                                <legend className="mb-3 text-sm font-semibold text-gray-800">
+                                    Photography Type
+                                </legend>
+                                <div className="grid grid-cols-3 gap-3">
+                                    {[
+                                        ['portrait', '👤', 'Portrait'],
+                                        ['product', '📷', 'Product'],
+                                        ['event', '✨', 'Event'],
+                                    ].map(([value, icon, label]) => (
+                                        <label
+                                            key={value}
+                                            className={`cursor-pointer rounded-lg border p-3 text-center transition ${formData.type === value
+                                                    ? 'border-orange-500 bg-orange-50 text-orange-700'
+                                                    : 'border-gray-200 hover:border-orange-300'
+                                                }`}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="type"
+                                                value={value}
+                                                checked={formData.type === value}
+                                                onChange={handleChange}
+                                                className="sr-only"
+                                            />
+                                            <span className="block text-xl">{icon}</span>
+                                            <span className="mt-1 block text-sm font-medium">
+                                                {label}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </fieldset>
+
+                            <div>
+                                <label htmlFor="budget" className="mb-2 block text-sm font-semibold text-gray-800">
+                                    Budget *
                                 </label>
                                 <select
                                     id="budget"
@@ -153,41 +155,47 @@ export default function Contact({ totalPrintsSelected = 0, selectedPrintsSummary
                                     value={formData.budget}
                                     onChange={handleChange}
                                     required
-                                    className="w-full px-3.5 py-2.5 rounded-md border border-line bg-white text-ink text-sm focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember transition-colors"
+                                    className={inputStyle}
                                 >
-                                    <option value="" disabled>
-                                        Select your budget range
-                                    </option>
+                                    <option value="" disabled>Select your budget</option>
                                     <option value="under-100">Below $100</option>
-                                    <option value="100-500">$100 - $500</option>
-                                    <option value="500-1000">$500 - $1,000</option>
+                                    <option value="100-500">$100–$500</option>
+                                    <option value="500-1000">$500–$1,000</option>
                                     <option value="over-1000">Above $1,000</option>
                                 </select>
                             </div>
 
-                            {/* Message */}
-                            <div className="flex flex-col gap-1.5">
-                                <label htmlFor="message" className="text-sm font-semibold text-ink">
-                                    Message
-                                </label>
+                            <div>
+                                <div className="mb-2 flex justify-between">
+                                    <label htmlFor="message" className="text-sm font-semibold text-gray-800">
+                                        Project Details
+                                    </label>
+                                    <span className="text-xs text-gray-500">
+                                        {formData.message.length}/500
+                                    </span>
+                                </div>
                                 <textarea
                                     id="message"
                                     name="message"
-                                    rows="3"
+                                    rows={4}
+                                    maxLength={500}
                                     value={formData.message}
                                     onChange={handleChange}
-                                    placeholder="Tell us more about your service needs..."
-                                    className="w-full px-3.5 py-2.5 rounded-md border border-line bg-white text-ink text-sm placeholder:text-stone-400 focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember transition-colors resize-y"
+                                    placeholder="Tell us about your project..."
+                                    className={inputStyle}
                                 />
                             </div>
 
-                            {/* Submit Button */}
                             <button
                                 type="submit"
-                                className="w-full mt-4 py-3 px-4 rounded-md bg-ember text-white font-semibold text-sm sm:text-base hover:bg-clay active:scale-[0.99] transition-all shadow-sm"
+                                className="block w-full cursor-pointer rounded-lg bg-orange-600 px-5 py-4 text-center text-base font-bold text-white shadow-md transition hover:bg-orange-700 focus:outline-none focus:ring-4 focus:ring-orange-200 active:scale-[0.99]"
                             >
-                                Send Message
+                                Send Inquiry →
                             </button>
+
+                            <p className="text-center text-xs text-gray-500">
+                                We aim to respond to your inquiry within 24 hours.
+                            </p>
                         </form>
                     )}
                 </div>
