@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Header = () => {
+function Header() {
   return (
     <header className="sticky top-0 bg-white shadow-md">
       <div className="flex items-center justify-between px-6 py-4">
@@ -17,12 +17,6 @@ const Header = () => {
           <a href="#about" className="hover:text-orange-600">About</a>
           <a href="#contact" className="hover:text-orange-600">Contact</a>
 
-          <a
-            href="#contact"
-            className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-500"
-          >
-            Book a Shoot
-          </a>
         </nav>
       </div>
     </header>

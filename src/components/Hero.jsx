@@ -1,13 +1,13 @@
 import React from 'react'
 
-const Hero = () => {
+function Hero() {
   return (
     <section
       id="home"
       className="relative flex h-112.5 items-center"
     >
       <img
-        src="./images/mesut-kaya-eOcyhe5-9sQ-unsplash.jpg"
+        src="./images/collections/mesut-kaya-eOcyhe5-9sQ-unsplash.jpg"
         alt="Photography portfolio"
         className="absolute h-full w-full object-cover"
       />

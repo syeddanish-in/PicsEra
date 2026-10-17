@@ -7,13 +7,13 @@ function App() {
 
   return (
     <div>
-      {/* Header Component */}
+      {/* 1. Header Component */}
       <Header />
 
-      {/* Hero Component */}
+      {/* 2. Hero Component */}
       <Hero />
 
-      {/* Main Content Component */}
+      {/* 3. Main Content Component */}
       <MainContent />
     </div>
   )
