@@ -14,7 +14,7 @@ function Hero() {
 
       <div className="absolute inset-0 bg-black/50"></div>
 
-      <div className="relative px-6 text-white">
+      <div className="relative mx-auto w-full max-w-6xl px-6 text-white">
         <p className="mb-3 font-bold tracking-widest text-orange-400">
           PICSERA PHOTOGRAPHY
         </p>
@@ -38,7 +38,7 @@ function Hero() {
         </a>
       </div>
     </section>
-  );
+  )
 }
 
-export default Hero;
+export default Hero
