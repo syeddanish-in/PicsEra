@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useAuth } from "../context/useAuth.js";
 
 function SavedModal() {
@@ -10,7 +11,19 @@ function SavedModal() {
     currentUser,
   } = useAuth();
 
+  const [addedMap, setAddedMap] = useState({});
+
   if (!isSavedModalOpen) return null;
+
+  const handleAddToCart = (photo) => {
+    const success = addToCart(photo, 1);
+    if (success && currentUser) {
+      setAddedMap((prev) => ({ ...prev, [photo.id]: true }));
+      setTimeout(() => {
+        setAddedMap((prev) => ({ ...prev, [photo.id]: false }));
+      }, 1600);
+    }
+  };
 
   return (
     <div
@@ -91,10 +104,14 @@ function SavedModal() {
                     <div className="mt-3 flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => addToCart(photo, 1)}
-                        className="flex-1 rounded-lg bg-orange-600 py-1.5 px-2 text-xs font-semibold text-white shadow-xs transition hover:bg-orange-700 text-center cursor-pointer"
+                        onClick={() => handleAddToCart(photo)}
+                        className={`flex-1 rounded-lg py-1.5 px-2 text-xs font-semibold shadow-xs transition text-center cursor-pointer ${
+                          addedMap[photo.id]
+                            ? "bg-emerald-600 text-white"
+                            : "bg-orange-600 text-white hover:bg-orange-700"
+                        }`}
                       >
-                        🛒 Add to Cart
+                        {addedMap[photo.id] ? "✓ Added!" : "🛒 Add to Cart"}
                       </button>
                     </div>
                   </div>

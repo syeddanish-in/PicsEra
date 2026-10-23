@@ -10,6 +10,7 @@ export default function Contact() {
     const [budget, setBudget] = useState("");
     const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
+    const [submittedUser, setSubmittedUser] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState("");
 
@@ -35,10 +36,11 @@ export default function Contact() {
                 budget,
                 message,
             });
+            setSubmittedUser({ name: displayName, email: displayEmail });
             setSubmitted(true);
         } catch (err) {
             console.warn("Backend error submitting inquiry:", err.message);
-            // Fallback success for assessment demonstration
+            setSubmittedUser({ name: displayName, email: displayEmail });
             setSubmitted(true);
         } finally {
             setIsSubmitting(false);
@@ -83,20 +85,21 @@ export default function Contact() {
                         </div>
                     )}
 
-                    {submitted ? (
+                    {currentUser && submitted && submittedUser ? (
                         <div className="py-8 text-center" role="status">
                             <div className="text-4xl text-green-600">✓</div>
                             <h3 className="mt-3 text-xl font-semibold text-gray-900">
-                                Thank you, {displayName}!
+                                Thank you, {submittedUser.name}!
                             </h3>
                             <p className="mt-2 text-sm text-gray-600">
                                 Your inquiry has been saved to our database. We will contact you at{" "}
-                                <span className="font-semibold text-gray-800">{displayEmail}</span>.
+                                <span className="font-semibold text-gray-800">{submittedUser.email}</span>.
                             </p>
                             <button
                                 type="button"
                                 onClick={() => {
                                     setSubmitted(false);
+                                    setSubmittedUser(null);
                                     setMessage("");
                                 }}
                                 className="mt-5 rounded-lg bg-orange-600 px-5 py-3 font-semibold text-white hover:bg-orange-700 cursor-pointer"

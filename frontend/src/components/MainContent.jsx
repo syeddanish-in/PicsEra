@@ -1,15 +1,43 @@
 import { useState, useEffect } from "react";
 import { PHOTOS as FALLBACK_PHOTOS, CATEGORIES } from "../data/photo.js";
 import { api } from "../api.js";
+import { useAuth } from "../context/useAuth.js";
 import PhotoCard from "./PhotoCard.jsx";
 import About from "./About.jsx";
 import Contact from "./Contact.jsx";
 
 function MainContent() {
+    const { currentUser } = useAuth();
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [photos, setPhotos] = useState(FALLBACK_PHOTOS);
     const [isLoading, setIsLoading] = useState(false);
-    const [userRatings, setUserRatings] = useState({});
+
+    // Ratings are isolated per authenticated user and reset immediately on sign out
+    const [userRatings, setUserRatings] = useState(() => {
+        if (!currentUser?.email) return {};
+        try {
+            const key = `picsera_ratings_${currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : {};
+        } catch {
+            return {};
+        }
+    });
+
+    const handleRatePhoto = (photoId, rating) => {
+        setUserRatings((prev) => {
+            const next = { ...prev, [photoId]: rating };
+            if (currentUser?.email) {
+                try {
+                    const key = `picsera_ratings_${currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+                    localStorage.setItem(key, JSON.stringify(next));
+                } catch {
+                    // Ignored
+                }
+            }
+            return next;
+        });
+    };
 
     // Fetch photos from real backend API on mount or category change
     useEffect(() => {
@@ -21,7 +49,6 @@ function MainContent() {
                 if (isMounted && data.photos && data.photos.length > 0) {
                     setPhotos(data.photos);
                 } else if (isMounted) {
-                    // Filter fallback photos if API returns empty
                     const filtered =
                         selectedCategory === "All"
                             ? FALLBACK_PHOTOS
@@ -99,12 +126,7 @@ function MainContent() {
                                 photo={photo}
                                 fixedRating={getFixedRating(index)}
                                 userRating={userRatings[photo.id] || 0}
-                                onRate={(rating) =>
-                                    setUserRatings((previous) => ({
-                                        ...previous,
-                                        [photo.id]: rating,
-                                    }))
-                                }
+                                onRate={(rating) => handleRatePhoto(photo.id, rating)}
                             />
                         ))}
                     </div>
