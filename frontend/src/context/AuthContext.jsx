@@ -4,7 +4,23 @@ import { AuthContext } from "./useAuth.js";
 import { api, getToken, setToken } from "../api.js";
 
 const CURRENT_USER_KEY = "picsera_current_user";
-const CART_KEY = "picsera_cart_items";
+
+// User-specific cart storage helpers
+const getUserCartKey = (user) => {
+  if (!user?.email) return null;
+  return `picsera_cart_${user.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+};
+
+const loadCartForUser = (user) => {
+  const key = getUserCartKey(user);
+  if (!key) return [];
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+};
 
 export function AuthProvider({ children }) {
   // Current logged-in user
@@ -22,11 +38,12 @@ export function AuthProvider({ children }) {
   // Full list of saved photo objects
   const [savedPhotosList, setSavedPhotosList] = useState([]);
 
-  // Cart stored locally
+  // Cart stored strictly per authenticated user
   const [cart, setCart] = useState(() => {
     try {
-      const stored = localStorage.getItem(CART_KEY);
-      return stored ? JSON.parse(stored) : [];
+      const storedUser = localStorage.getItem(CURRENT_USER_KEY);
+      const u = storedUser ? JSON.parse(storedUser) : null;
+      return loadCartForUser(u);
     } catch {
       return [];
     }
@@ -76,6 +93,7 @@ export function AuthProvider({ children }) {
         setCurrentUser(null);
         setSavedPhotoIds([]);
         setSavedPhotosList([]);
+        setCart([]);
         return;
       }
 
@@ -84,6 +102,9 @@ export function AuthProvider({ children }) {
         if (data.user) {
           setCurrentUser(data.user);
           localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+          // Restore user's personal cart
+          const userCart = loadCartForUser(data.user);
+          setCart(userCart);
           refreshSavedPhotos();
         } else {
           throw new Error("Invalid session");
@@ -92,7 +113,6 @@ export function AuthProvider({ children }) {
         // If token is invalid or user doesn't exist, clear session
         setToken(null);
         localStorage.removeItem(CURRENT_USER_KEY);
-        localStorage.removeItem(CART_KEY);
         setCurrentUser(null);
         setSavedPhotoIds([]);
         setSavedPhotosList([]);
@@ -103,16 +123,17 @@ export function AuthProvider({ children }) {
     initSession();
   }, [refreshSavedPhotos]);
 
-  // Persist cart only when logged in
+  // Persist cart to user's personal storage whenever cart changes
   useEffect(() => {
-    try {
-      if (currentUser) {
-        localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      } else {
-        localStorage.removeItem(CART_KEY);
+    if (currentUser) {
+      const key = getUserCartKey(currentUser);
+      if (key) {
+        try {
+          localStorage.setItem(key, JSON.stringify(cart));
+        } catch (e) {
+          console.error("Failed to save cart to localStorage", e);
+        }
       }
-    } catch (e) {
-      console.error("Failed to save cart to localStorage", e);
     }
   }, [cart, currentUser]);
 
@@ -131,6 +152,11 @@ export function AuthProvider({ children }) {
       setToken(data.token);
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
       setCurrentUser(data.user);
+
+      // Restore cart specifically for this user
+      const restoredCart = loadCartForUser(data.user);
+      setCart(restoredCart);
+
       refreshSavedPhotos();
       return data.user;
     } catch (apiError) {
@@ -159,15 +185,25 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Sign Out: completely clear user session, saved photos, and cart
+  // Sign Out: hides cart from active session, preserves user's cart in localStorage
   const logout = () => {
     setToken(null);
     localStorage.removeItem(CURRENT_USER_KEY);
-    localStorage.removeItem(CART_KEY);
     setCurrentUser(null);
     setSavedPhotoIds([]);
     setSavedPhotosList([]);
+    setCart([]); // Not visible when logged out
+  };
+
+  // Clear Cart: empties cart and removes stored cart for current user (used after inquiry is sent)
+  const clearCart = () => {
     setCart([]);
+    if (currentUser) {
+      const key = getUserCartKey(currentUser);
+      if (key) {
+        localStorage.removeItem(key);
+      }
+    }
   };
 
   // Toggle Save Photo via real API
@@ -245,8 +281,6 @@ export function AuthProvider({ children }) {
   const removeFromCart = (photoId) => {
     setCart((prev) => prev.filter((item) => item.photoId !== photoId));
   };
-
-  const clearCart = () => setCart([]);
 
   // Counts strictly hidden when not signed in
   const totalCartCount = currentUser ? cart.reduce((sum, item) => sum + item.quantity, 0) : 0;

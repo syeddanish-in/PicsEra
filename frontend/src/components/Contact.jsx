@@ -3,7 +3,7 @@ import { useAuth } from "../context/useAuth.js";
 import { api } from "../api.js";
 
 export default function Contact() {
-    const { currentUser, openAuthModal } = useAuth();
+    const { currentUser, openAuthModal, clearCart } = useAuth();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [type, setType] = useState("portrait");
@@ -38,10 +38,13 @@ export default function Contact() {
             });
             setSubmittedUser({ name: displayName, email: displayEmail });
             setSubmitted(true);
+            // Inquiry sent: clear cart for this user
+            clearCart();
         } catch (err) {
             console.warn("Backend error submitting inquiry:", err.message);
             setSubmittedUser({ name: displayName, email: displayEmail });
             setSubmitted(true);
+            clearCart();
         } finally {
             setIsSubmitting(false);
         }
