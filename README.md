@@ -1,96 +1,72 @@
-# PicsEra – Photography Portfolio
+# PicsEra – Photography Portfolio Platform
 
-PicsEra is a responsive photography portfolio website designed to showcase visual stories, browse photography collections, select prints, and contact the photographer to book a shoot.
+PicsEra is a modern, responsive photography portfolio and archival print booking platform built with React 19, Tailwind CSS v4, and Vite.
 
-## Features
+---
 
-- Responsive layout for mobile, tablet, and desktop.
-- Photography gallery with image cards.
-- Print selection and quantity management.
-- Interactive contact form with booking details.
-- Responsive navigation and reusable React components.
-- Modern styling with Tailwind CSS.
+## 📁 Project Architecture
 
-## Tech Stack
-
-- **Frontend:** React, JavaScript, HTML5
-- **Styling:** Tailwind CSS v4
-- **Build Tool:** Vite
-- **Version Control:** Git and GitHub
-
-## Getting Started
-
-### Prerequisites
-
-Install [Node.js](https://nodejs.org/) and npm.
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/syeddanish-in/PicsEra.git
-   cd PicsEra
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-
-   ```bash
-   npm run dev
-   ```
-
-4. Open the local URL displayed in your terminal.
-
-## Production Build
-
-Create an optimized production build:
-
-```bash
-npm run build
-```
-
-Preview the production build locally:
-
-```bash
-npm run preview
-```
-
-Run the configured ESLint checks:
-
-```bash
-npm run lint
-```
-
-## Project Structure
+The project is structured into dedicated **Frontend** and **Backend** directories:
 
 ```text
 PicsEra/
-├── public/
-│   └── images/
-│       └── collections/
-├── src/
-│   ├── components/
-│   ├── App.jsx
-│   └── main.jsx
-├── index.html
-├── package.json
-├── package-lock.json
-├── vite.config.js
-└── README.md
+├── frontend/                  # React 19 + Tailwind CSS + Vite
+│   ├── public/
+│   │   └── images/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/        # Header, Hero, PhotoCard, AuthModal, CartModal, SavedModal, etc.
+│   │   ├── context/           # AuthContext & useAuth hook
+│   │   ├── data/              # Curated photo collection data
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+│
+├── backend/                   # Node.js API + Neon Postgres (Upcoming)
+│   └── README.md
+│
+├── .gitignore                 # Monorepo-level git ignore rules
+└── README.md                  # Project documentation
 ```
 
-*The structure above is illustrative; adjust it to match the actual folders and filenames in your repository.*
+---
 
-## Purpose
+## 🚀 Getting Started
 
-PicsEra demonstrates responsive UI development, reusable React components, Tailwind CSS styling, and interactive user experiences for a photography portfolio.
+### 1. Clone the repository
 
-## License
+```bash
+git clone https://github.com/syeddanish-in/PicsEra.git
+cd PicsEra
+```
 
-No license has been specified. Add a `LICENSE` file if you intend to publish the project under an open-source license.
+### 2. Frontend Development
+
+Navigate to the `frontend` folder and install dependencies:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the local Vite URL displayed in your terminal (typically `http://localhost:5173`).
+
+### 3. Frontend Production Build
+
+```bash
+cd frontend
+npm run build
+```
+
+---
+
+## ✨ Current Features
+
+- **Authentication System**: Simple Email & Password Sign In, plus Name + Email + Password Create Account.
+- **Personalized Saved Photos**: Per-user `🤍 Save` ➔ `❤️ Saved` heart buttons with custom collections.
+- **Cart & Inquiry**: Add photos/prints to Cart, review selections, and submit booking inquiries.
+- **Login-Guarded Actions**: Unauthenticated users are politely prompted to sign in when saving, adding to cart, or submitting inquiries.
+- **Responsive Navigation**: Restored PicsEra branding, saved counter badge, cart counter badge, and user profile management.
