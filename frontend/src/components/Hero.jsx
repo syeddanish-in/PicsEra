@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Hero() {
   return (
     <section
@@ -38,7 +36,7 @@ function Hero() {
         </a>
       </div>
     </section>
-  )
+  );
 }
 
-export default Hero
+export default Hero;

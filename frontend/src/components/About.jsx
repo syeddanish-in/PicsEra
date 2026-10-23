@@ -1,48 +1,43 @@
-import React from 'react';
-
 export default function About() {
     return (
         <section id="about" className="bg-orange-50 py-12 sm:py-16 lg:py-20">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 items-center gap-8 rounded-2xl bg-white p-5 shadow-sm sm:gap-12 sm:p-8 lg:grid-cols-2 lg:gap-16 lg:p-12">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                <div className="text-center">
+                    <p className="text-sm font-semibold uppercase tracking-wider text-orange-600">
+                        About the Artist
+                    </p>
+                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                        Capturing Life Through the Lens
+                    </h2>
+                </div>
 
-                    {/* Image */}
-                    <div className="aspect-[4/3] overflow-hidden rounded-xl shadow-md sm:aspect-[16/10] lg:aspect-square">
-                        <img
-                            src="/images/collections/vitaly-gariev-VnhCfo8Fkes-unsplash.jpg"
-                            alt="Photography studio showcase"
-                            loading="lazy"
-                            className="h-full w-full object-cover"
-                        />
+                <div className="mt-8 text-center text-base leading-7 text-gray-600 sm:mt-10 sm:text-lg sm:leading-8">
+                    <p>
+                        Welcome to PicsEra. With over a decade behind the camera, I specialize in
+                        portrait, architectural, culinary, and lifestyle photography. Every image in
+                        this gallery is available as a signed, archival-quality print crafted with
+                        museum-grade paper and pigment inks designed to last generations.
+                    </p>
+                    <p className="mt-4">
+                        Whether you are looking to acquire fine art prints for your home or office,
+                        or wish to commission a bespoke photography shoot, I would love to hear from
+                        you. Explore the portfolio above and select your favorite pieces.
+                    </p>
+                </div>
+
+                <div className="mt-10 flex flex-wrap justify-center gap-8 text-center sm:gap-12">
+                    <div>
+                        <span className="block text-3xl font-extrabold text-orange-600">10+</span>
+                        <span className="mt-1 text-sm text-gray-500">Years Experience</span>
                     </div>
-
-                    {/* Content */}
-                    <div className="max-w-xl">
-                        <p className="mb-2 text-xs text-orange-600 font-bold uppercase tracking-widest text-ember sm:text-sm">
-                            About PicsEra
-                        </p>
-
-                        <h2 className="mb-4 font-heading text-2xl font-normal leading-tight text-ink sm:mb-6 sm:text-4xl lg:text-5xl">
-                            Stories told through photography.
-                        </h2>
-
-                        <p className="mb-6 text-sm leading-relaxed text-ink-soft sm:mb-8 sm:text-base">
-                            PicsEra is a photography portfolio dedicated to capturing emotions, people,
-                            places, and the beauty of everyday moments. Each photograph is created to
-                            preserve a story and turn memorable moments into lasting visual experiences.
-                        </p>
-
-                        <a
-                            href="#contact"
-                            className="group inline-flex items-center border-b-2 border-orange-600 pb-1 text-sm font-bold text-orange-600 transition-colors hover:border-clay hover:text-clay sm:text-base"
-                        >
-                            Let's Create Together
-                            <span className="ml-1 transition-transform group-hover:translate-x-1">
-                                &rarr;
-                            </span>
-                        </a>
+                    <div>
+                        <span className="block text-3xl font-extrabold text-orange-600">500+</span>
+                        <span className="mt-1 text-sm text-gray-500">Shoots Completed</span>
                     </div>
-
+                    <div>
+                        <span className="block text-3xl font-extrabold text-orange-600">100%</span>
+                        <span className="mt-1 text-sm text-gray-500">Archival Quality</span>
+                    </div>
                 </div>
             </div>
         </section>

@@ -1,37 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PHOTOS } from "../data/photo.js";
 import { AuthContext } from "./useAuth.js";
+import { api, getToken, setToken } from "../api.js";
 
-const DEFAULT_USERS_KEY = "picsera_registered_users";
 const CURRENT_USER_KEY = "picsera_current_user";
 const CART_KEY = "picsera_cart_items";
 
-const INITIAL_DEMO_USERS = [
-  {
-    id: "user_demo_1",
-    name: "Danish",
-    email: "danish@picsera.com",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Danish",
-  },
-];
-
-const getUserSavedKey = (user) => {
-  if (!user?.email) return null;
-  return `picsera_saved_${user.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
-};
-
-const loadSavedForUser = (user) => {
-  const key = getUserSavedKey(user);
-  if (!key) return [];
-  try {
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-};
-
 export function AuthProvider({ children }) {
+  // Current logged-in user
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const stored = localStorage.getItem(CURRENT_USER_KEY);
@@ -41,19 +17,12 @@ export function AuthProvider({ children }) {
     }
   });
 
-  const [savedPhotoIds, setSavedPhotoIds] = useState(() =>
-    loadSavedForUser(
-      (() => {
-        try {
-          const stored = localStorage.getItem(CURRENT_USER_KEY);
-          return stored ? JSON.parse(stored) : null;
-        } catch {
-          return null;
-        }
-      })()
-    )
-  );
+  // Array of saved photo IDs (e.g. [1, 5, 8])
+  const [savedPhotoIds, setSavedPhotoIds] = useState([]);
+  // Full list of saved photo objects
+  const [savedPhotosList, setSavedPhotosList] = useState([]);
 
+  // Cart stored locally
   const [cart, setCart] = useState(() => {
     try {
       const stored = localStorage.getItem(CART_KEY);
@@ -63,12 +32,67 @@ export function AuthProvider({ children }) {
     }
   });
 
+  // Modals state
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState("signin");
   const [authModalNotice, setAuthModalNotice] = useState("");
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
+  // Helper to load saved photos from real backend API (or fallback)
+  const refreshSavedPhotos = useCallback(async () => {
+    if (!getToken()) {
+      setSavedPhotoIds([]);
+      setSavedPhotosList([]);
+      return;
+    }
+
+    try {
+      const data = await api.getSavedPhotos();
+      setSavedPhotoIds(data.savedPhotoIds || []);
+      setSavedPhotosList(data.savedPhotos || []);
+    } catch {
+      // Fallback to localStorage if backend not yet running
+      try {
+        const storedUser = localStorage.getItem(CURRENT_USER_KEY);
+        const u = storedUser ? JSON.parse(storedUser) : null;
+        if (u?.email) {
+          const key = `picsera_saved_${u.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+          const localSaved = JSON.parse(localStorage.getItem(key) || "[]");
+          setSavedPhotoIds(localSaved);
+          setSavedPhotosList(PHOTOS.filter((p) => localSaved.includes(p.id)));
+        }
+      } catch {
+        // Ignored
+      }
+    }
+  }, []);
+
+  // On initial mount: verify real session with backend /api/auth/me (survives page refresh)
+  useEffect(() => {
+    const initSession = async () => {
+      const token = getToken();
+      if (!token) return;
+
+      try {
+        const data = await api.getMe();
+        if (data.user) {
+          setCurrentUser(data.user);
+          localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+          refreshSavedPhotos();
+        }
+      } catch {
+        // If token is expired, clean session
+        setToken(null);
+        localStorage.removeItem(CURRENT_USER_KEY);
+        setCurrentUser(null);
+      }
+    };
+
+    initSession();
+  }, [refreshSavedPhotos]);
+
+  // Persist cart
   useEffect(() => {
     try {
       localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -77,101 +101,63 @@ export function AuthProvider({ children }) {
     }
   }, [cart]);
 
-  const getRegisteredUsers = () => {
-    try {
-      const stored = localStorage.getItem(DEFAULT_USERS_KEY);
-      if (!stored) {
-        localStorage.setItem(DEFAULT_USERS_KEY, JSON.stringify(INITIAL_DEMO_USERS));
-        return INITIAL_DEMO_USERS;
-      }
-      return JSON.parse(stored);
-    } catch {
-      return INITIAL_DEMO_USERS;
-    }
-  };
-
-  const signin = ({ email, password }) => {
+  // Sign In using real backend API
+  const signin = async ({ email, password }) => {
     const cleanEmail = (email || "").trim().toLowerCase();
-    if (!cleanEmail) {
-      throw new Error("Please enter your email.");
-    }
-    if (!password) {
-      throw new Error("Please enter your password.");
-    }
+    if (!cleanEmail) throw new Error("Please enter your email.");
+    if (!password) throw new Error("Please enter your password.");
 
-    const users = getRegisteredUsers();
-    const foundUser = users.find(
-      (u) => u.email && u.email.toLowerCase() === cleanEmail
-    );
-
-    let userToLogin;
-    if (foundUser) {
-      userToLogin = foundUser;
-    } else {
-      // Create account automatically on signin if demo user
-      const derivedName = cleanEmail.split("@")[0];
-      const formattedName = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
-      userToLogin = {
-        id: `user_${Date.now()}`,
-        name: formattedName,
-        email: cleanEmail,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${cleanEmail}`,
-      };
-      const updatedUsers = [...users, userToLogin];
-      localStorage.setItem(DEFAULT_USERS_KEY, JSON.stringify(updatedUsers));
+    try {
+      const data = await api.login({ email: cleanEmail, password });
+      setToken(data.token);
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+      setCurrentUser(data.user);
+      setIsAuthModalOpen(false);
+      refreshSavedPhotos();
+      return data.user;
+    } catch (apiError) {
+      throw new Error(apiError.message || "Failed to sign in. Please verify your credentials.", {
+        cause: apiError,
+      });
     }
-
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(userToLogin));
-    setCurrentUser(userToLogin);
-    setSavedPhotoIds(loadSavedForUser(userToLogin));
-    setIsAuthModalOpen(false);
-    return userToLogin;
   };
 
-  const signup = ({ name, email, password }) => {
+  // Sign Up using real backend API
+  const signup = async ({ name, email, password }) => {
     const cleanName = (name || "").trim();
     const cleanEmail = (email || "").trim().toLowerCase();
 
     if (!cleanName) throw new Error("Please enter your Name.");
-    if (!cleanEmail || !cleanEmail.includes("@")) {
-      throw new Error("Please enter a valid Email.");
+    if (!cleanEmail || !cleanEmail.includes("@")) throw new Error("Please enter a valid Email.");
+    if (!password || password.length < 4) throw new Error("Password must be at least 4 characters long.");
+
+    try {
+      const data = await api.signup({ name: cleanName, email: cleanEmail, password });
+      setToken(data.token);
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+      setCurrentUser(data.user);
+      setIsAuthModalOpen(false);
+      setSavedPhotoIds([]);
+      setSavedPhotosList([]);
+      return data.user;
+    } catch (apiError) {
+      throw new Error(apiError.message || "Failed to create account. Please try again.", {
+        cause: apiError,
+      });
     }
-    if (!password || password.length < 10) {
-      throw new Error("Password must be at least 8 characters long.");
-    }
-
-    const users = getRegisteredUsers();
-    const exists = users.find(
-      (u) => u.email && u.email.toLowerCase() === cleanEmail
-    );
-
-    if (exists) {
-      throw new Error("An account with this email already exists. Try signing in.");
-    }
-
-    const newUser = {
-      id: `user_${Date.now()}`,
-      name: cleanName,
-      email: cleanEmail,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${cleanEmail}`,
-    };
-
-    const updatedUsers = [...users, newUser];
-    localStorage.setItem(DEFAULT_USERS_KEY, JSON.stringify(updatedUsers));
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
-    setCurrentUser(newUser);
-    setSavedPhotoIds(loadSavedForUser(newUser));
-    setIsAuthModalOpen(false);
-    return newUser;
   };
 
+  // Logout
   const logout = () => {
+    setToken(null);
     localStorage.removeItem(CURRENT_USER_KEY);
     setCurrentUser(null);
     setSavedPhotoIds([]);
+    setSavedPhotosList([]);
   };
 
-  const toggleSavePhoto = (photoId) => {
+  // Toggle Save Photo via real API
+  const toggleSavePhoto = async (photoId) => {
     if (!currentUser) {
       setAuthModalNotice("Please sign in or create an account to save photos to your personal collection!");
       setAuthModalMode("signin");
@@ -179,32 +165,34 @@ export function AuthProvider({ children }) {
       return false;
     }
 
-    const userSavedKey = getUserSavedKey(currentUser);
-    setSavedPhotoIds((prev) => {
-      let updated;
-      if (prev.includes(photoId)) {
-        updated = prev.filter((id) => id !== photoId);
-      } else {
-        updated = [...prev, photoId];
-      }
-      if (userSavedKey) {
-        try {
-          localStorage.setItem(userSavedKey, JSON.stringify(updated));
-        } catch (err) {
-          console.error("Failed to persist saved photos", err);
-        }
-      }
-      return updated;
-    });
+    const cleanId = parseInt(photoId, 10);
+
+    // Optimistic UI update
+    setSavedPhotoIds((prev) =>
+      prev.includes(cleanId) ? prev.filter((id) => id !== cleanId) : [...prev, cleanId]
+    );
+
+    try {
+      await api.toggleSavePhoto(cleanId);
+      refreshSavedPhotos();
+    } catch (err) {
+      console.warn("API toggle save warning, falling back to local storage:", err.message);
+      // Fallback local persistence
+      const key = `picsera_saved_${currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+      const updated = savedPhotoIds.includes(cleanId)
+        ? savedPhotoIds.filter((id) => id !== cleanId)
+        : [...savedPhotoIds, cleanId];
+      localStorage.setItem(key, JSON.stringify(updated));
+    }
 
     return true;
   };
 
   const isPhotoSaved = (photoId) => {
-    return savedPhotoIds.includes(photoId);
+    return savedPhotoIds.includes(parseInt(photoId, 10));
   };
 
-  // User cannot add product without login
+  // Add to cart (login required)
   const addToCart = (photo, quantity = 1) => {
     if (!currentUser) {
       setAuthModalNotice("Please sign in to add photos to your cart!");
@@ -244,11 +232,7 @@ export function AuthProvider({ children }) {
     setCart((prev) => prev.filter((item) => item.photoId !== photoId));
   };
 
-  const clearCart = () => {
-    setCart([]);
-  };
-
-  const savedPhotosList = PHOTOS.filter((p) => savedPhotoIds.includes(p.id));
+  const clearCart = () => setCart([]);
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const openAuthModal = (mode = "signin", notice = "") => {

@@ -1,17 +1,52 @@
-import { useState } from "react";
-import { PHOTOS, CATEGORIES } from "../data/photo.js";
+import { useState, useEffect } from "react";
+import { PHOTOS as FALLBACK_PHOTOS, CATEGORIES } from "../data/photo.js";
+import { api } from "../api.js";
 import PhotoCard from "./PhotoCard.jsx";
 import About from "./About.jsx";
 import Contact from "./Contact.jsx";
 
 function MainContent() {
     const [selectedCategory, setSelectedCategory] = useState("All");
+    const [photos, setPhotos] = useState(FALLBACK_PHOTOS);
+    const [isLoading, setIsLoading] = useState(false);
     const [userRatings, setUserRatings] = useState({});
 
-    const filteredPhotos =
-        selectedCategory === "All"
-            ? PHOTOS
-            : PHOTOS.filter((photo) => photo.category === selectedCategory);
+    // Fetch photos from real backend API on mount or category change
+    useEffect(() => {
+        let isMounted = true;
+        const fetchPhotos = async () => {
+            setIsLoading(true);
+            try {
+                const data = await api.getPhotos(selectedCategory);
+                if (isMounted && data.photos && data.photos.length > 0) {
+                    setPhotos(data.photos);
+                } else if (isMounted) {
+                    // Filter fallback photos if API returns empty
+                    const filtered =
+                        selectedCategory === "All"
+                            ? FALLBACK_PHOTOS
+                            : FALLBACK_PHOTOS.filter((p) => p.category === selectedCategory);
+                    setPhotos(filtered);
+                }
+            } catch (err) {
+                console.warn("Backend API unavailable, using local photos dataset:", err.message);
+                if (isMounted) {
+                    const filtered =
+                        selectedCategory === "All"
+                            ? FALLBACK_PHOTOS
+                            : FALLBACK_PHOTOS.filter((p) => p.category === selectedCategory);
+                    setPhotos(filtered);
+                }
+            } finally {
+                if (isMounted) setIsLoading(false);
+            }
+        };
+
+        fetchPhotos();
+        return () => {
+            isMounted = false;
+        };
+    }, [selectedCategory]);
 
     function getFixedRating(index) {
         return 4.1 + (index % 9) / 10;
@@ -28,10 +63,11 @@ function MainContent() {
                         Featured Photographs
                     </h2>
                     <p className="mt-3 text-gray-600">
-                        Explore our collection of photography.
+                        Explore our collection of photography, powered by our live PostgreSQL database.
                     </p>
                 </div>
 
+                {/* Category filters */}
                 <div className="mb-8 flex flex-wrap justify-center gap-2">
                     {CATEGORIES.map((category) => (
                         <button
@@ -49,13 +85,15 @@ function MainContent() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {filteredPhotos.map((photo) => {
-                        const index = PHOTOS.findIndex(
-                            (item) => item.id === photo.id
-                        );
-
-                        return (
+                {/* Photo grid */}
+                {isLoading ? (
+                    <div className="py-20 text-center">
+                        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-orange-600 border-r-transparent"></div>
+                        <p className="mt-3 text-sm text-gray-500">Loading photographs from database...</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {photos.map((photo, index) => (
                             <PhotoCard
                                 key={photo.id}
                                 photo={photo}
@@ -68,9 +106,9 @@ function MainContent() {
                                     }))
                                 }
                             />
-                        );
-                    })}
-                </div>
+                        ))}
+                    </div>
+                )}
             </section>
 
             <About />
