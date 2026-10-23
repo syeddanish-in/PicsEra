@@ -6,6 +6,7 @@ import AuthModal from "./components/AuthModal.jsx";
 import SavedModal from "./components/SavedModal.jsx";
 import CartModal from "./components/CartModal.jsx";
 import AuthProvider from "./context/AuthContext.jsx";
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <SavedModal />
         <CartModal />
       </div>
+      <Analytics />
     </AuthProvider>
   );
 }

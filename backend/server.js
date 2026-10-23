@@ -44,13 +44,15 @@ app.use((req, res, next) => {
 // Health check endpoint (for Railway, Render, or uptime monitoring)
 app.get("/api/health", async (req, res) => {
   let dbStatus = "disconnected";
-  try {
-    if (process.env.DATABASE_URL) {
+  if (!process.env.DATABASE_URL) {
+    dbStatus = "disconnected (DATABASE_URL is not set in Render Environment Variables)";
+  } else {
+    try {
       await query("SELECT 1");
       dbStatus = "connected";
+    } catch (err) {
+      dbStatus = `error: ${err.message}`;
     }
-  } catch (err) {
-    dbStatus = `error: ${err.message}`;
   }
 
   res.json({
