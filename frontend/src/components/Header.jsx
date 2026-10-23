@@ -15,7 +15,7 @@ function Header() {
 
   const handleSavedClick = () => {
     if (!currentUser) {
-      openAuthModal("signin", "Sign in to view your personal saved photographs collection!");
+      openAuthModal("signin", "Please sign in to view your personal saved photographs collection!");
     } else {
       openSavedModal();
     }
@@ -23,7 +23,7 @@ function Header() {
 
   const handleCartClick = () => {
     if (!currentUser) {
-      openAuthModal("signin", "Sign in to view your cart!");
+      openAuthModal("signin", "Please sign in to view your cart!");
     } else {
       openCartModal();
     }
@@ -32,7 +32,7 @@ function Header() {
   return (
     <header className="sticky top-0 z-40 bg-white shadow-md">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-8 px-6 py-4">
-        {/* Logo - restored exactly as it was originally */}
+        {/* Logo - original markup */}
         <a href="#home" className="text-2xl font-bold">
           Pics<span className="text-orange-600">Era</span>
         </a>
@@ -67,7 +67,7 @@ function Header() {
 
         {/* Right side actions: Saved, Cart & Auth */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Saved Button with Heart & Counter */}
+          {/* Saved Button with Heart & Counter (Counter hidden on logout) */}
           <button
             type="button"
             onClick={handleSavedClick}
@@ -76,14 +76,14 @@ function Header() {
           >
             <span>❤️</span>
             <span>Saved</span>
-            {savedPhotoIds.length > 0 && (
+            {currentUser && savedPhotoIds.length > 0 && (
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
                 {savedPhotoIds.length}
               </span>
             )}
           </button>
 
-          {/* Cart Button with Counter */}
+          {/* Cart Button with Counter (Counter hidden on logout) */}
           <button
             type="button"
             onClick={handleCartClick}
@@ -92,7 +92,7 @@ function Header() {
           >
             <span>🛒</span>
             <span>Cart</span>
-            {totalCartCount > 0 && (
+            {currentUser && totalCartCount > 0 && (
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-600 text-[10px] font-bold text-white">
                 {totalCartCount}
               </span>
@@ -147,7 +147,7 @@ function Header() {
             aria-label="Saved Photos"
           >
             <span>❤️</span>
-            {savedPhotoIds.length > 0 && (
+            {currentUser && savedPhotoIds.length > 0 && (
               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[9px] font-bold text-white">
                 {savedPhotoIds.length}
               </span>
@@ -162,7 +162,7 @@ function Header() {
             aria-label="Cart"
           >
             <span>🛒</span>
-            {totalCartCount > 0 && (
+            {currentUser && totalCartCount > 0 && (
               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-600 text-[9px] font-bold text-white">
                 {totalCartCount}
               </span>

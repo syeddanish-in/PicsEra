@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
-  // Helper to load saved photos from real backend API (or fallback)
+  // Helper to load saved photos from real backend API
   const refreshSavedPhotos = useCallback(async () => {
     if (!getToken()) {
       setSavedPhotoIds([]);
@@ -52,7 +52,7 @@ export function AuthProvider({ children }) {
       setSavedPhotoIds(data.savedPhotoIds || []);
       setSavedPhotosList(data.savedPhotos || []);
     } catch {
-      // Fallback to localStorage if backend not yet running
+      // Fallback to local storage if API is offline
       try {
         const storedUser = localStorage.getItem(CURRENT_USER_KEY);
         const u = storedUser ? JSON.parse(storedUser) : null;
@@ -72,7 +72,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const initSession = async () => {
       const token = getToken();
-      if (!token) return;
+      if (!token) {
+        setCurrentUser(null);
+        setSavedPhotoIds([]);
+        setSavedPhotosList([]);
+        return;
+      }
 
       try {
         const data = await api.getMe();
@@ -80,66 +85,73 @@ export function AuthProvider({ children }) {
           setCurrentUser(data.user);
           localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
           refreshSavedPhotos();
+        } else {
+          throw new Error("Invalid session");
         }
       } catch {
-        // If token is expired, clean session
+        // If token is invalid or user doesn't exist, clear session
         setToken(null);
         localStorage.removeItem(CURRENT_USER_KEY);
+        localStorage.removeItem(CART_KEY);
         setCurrentUser(null);
+        setSavedPhotoIds([]);
+        setSavedPhotosList([]);
+        setCart([]);
       }
     };
 
     initSession();
   }, [refreshSavedPhotos]);
 
-  // Persist cart
+  // Persist cart only when logged in
   useEffect(() => {
     try {
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      if (currentUser) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      } else {
+        localStorage.removeItem(CART_KEY);
+      }
     } catch (e) {
       console.error("Failed to save cart to localStorage", e);
     }
-  }, [cart]);
+  }, [cart, currentUser]);
 
   // Sign In using real backend API
   const signin = async ({ email, password }) => {
     const cleanEmail = (email || "").trim().toLowerCase();
-    if (!cleanEmail) throw new Error("Please enter your email.");
-    if (!password) throw new Error("Please enter your password.");
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      throw new Error("A valid email is required.");
+    }
+    if (!password || password.length < 8) {
+      throw new Error("Password must be at least 8 characters long.");
+    }
 
     try {
       const data = await api.login({ email: cleanEmail, password });
       setToken(data.token);
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
       setCurrentUser(data.user);
-      setIsAuthModalOpen(false);
       refreshSavedPhotos();
       return data.user;
     } catch (apiError) {
-      throw new Error(apiError.message || "Failed to sign in. Please verify your credentials.", {
+      throw new Error(apiError.message || "User doesn't exist", {
         cause: apiError,
       });
     }
   };
 
-  // Sign Up using real backend API
+  // Sign Up using real backend API (does NOT auto-login, redirects user to sign in)
   const signup = async ({ name, email, password }) => {
     const cleanName = (name || "").trim();
     const cleanEmail = (email || "").trim().toLowerCase();
 
-    if (!cleanName) throw new Error("Please enter your Name.");
-    if (!cleanEmail || !cleanEmail.includes("@")) throw new Error("Please enter a valid Email.");
-    if (!password || password.length < 4) throw new Error("Password must be at least 4 characters long.");
+    if (!cleanName) throw new Error("Name is required.");
+    if (!cleanEmail || !cleanEmail.includes("@")) throw new Error("A valid email is required.");
+    if (!password || password.length < 8) throw new Error("Password must be at least 8 characters long.");
 
     try {
       const data = await api.signup({ name: cleanName, email: cleanEmail, password });
-      setToken(data.token);
-      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
-      setCurrentUser(data.user);
-      setIsAuthModalOpen(false);
-      setSavedPhotoIds([]);
-      setSavedPhotosList([]);
-      return data.user;
+      return data;
     } catch (apiError) {
       throw new Error(apiError.message || "Failed to create account. Please try again.", {
         cause: apiError,
@@ -147,13 +159,15 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout
+  // Sign Out: completely clear user session, saved photos, and cart
   const logout = () => {
     setToken(null);
     localStorage.removeItem(CURRENT_USER_KEY);
+    localStorage.removeItem(CART_KEY);
     setCurrentUser(null);
     setSavedPhotoIds([]);
     setSavedPhotosList([]);
+    setCart([]);
   };
 
   // Toggle Save Photo via real API
@@ -177,7 +191,6 @@ export function AuthProvider({ children }) {
       refreshSavedPhotos();
     } catch (err) {
       console.warn("API toggle save warning, falling back to local storage:", err.message);
-      // Fallback local persistence
       const key = `picsera_saved_${currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
       const updated = savedPhotoIds.includes(cleanId)
         ? savedPhotoIds.filter((id) => id !== cleanId)
@@ -189,6 +202,7 @@ export function AuthProvider({ children }) {
   };
 
   const isPhotoSaved = (photoId) => {
+    if (!currentUser) return false;
     return savedPhotoIds.includes(parseInt(photoId, 10));
   };
 
@@ -233,7 +247,10 @@ export function AuthProvider({ children }) {
   };
 
   const clearCart = () => setCart([]);
-  const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Counts strictly hidden when not signed in
+  const totalCartCount = currentUser ? cart.reduce((sum, item) => sum + item.quantity, 0) : 0;
+  const activeSavedCount = currentUser ? savedPhotoIds.length : 0;
 
   const openAuthModal = (mode = "signin", notice = "") => {
     setAuthModalMode(mode);
@@ -245,11 +262,12 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         currentUser,
-        savedPhotoIds,
-        savedPhotosList,
+        savedPhotoIds: currentUser ? savedPhotoIds : [],
+        savedPhotosList: currentUser ? savedPhotosList : [],
+        activeSavedCount,
         isPhotoSaved,
         toggleSavePhoto,
-        cart,
+        cart: currentUser ? cart : [],
         totalCartCount,
         addToCart,
         updateCartQuantity,

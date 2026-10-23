@@ -8,7 +8,7 @@ function PhotoCard({
     userRating,
     onRate,
 }) {
-    const { isPhotoSaved, toggleSavePhoto, addToCart, currentUser } = useAuth();
+    const { isPhotoSaved, toggleSavePhoto, addToCart, currentUser, openAuthModal } = useAuth();
     const isSaved = isPhotoSaved(photo.id);
     const [addedAlert, setAddedAlert] = useState(false);
 
@@ -26,6 +26,15 @@ function PhotoCard({
             setAddedAlert(true);
             setTimeout(() => setAddedAlert(false), 1600);
         }
+    };
+
+    // User must be logged in to rate/like photos
+    const handleRate = (rating) => {
+        if (!currentUser) {
+            openAuthModal("signin", "Please sign in to rate this photograph!");
+            return;
+        }
+        onRate(rating);
     };
 
     return (
@@ -76,11 +85,11 @@ function PhotoCard({
                         {photo.category} · Archival Print Available
                     </p>
 
-                    {/* Interactive User Rating */}
+                    {/* Interactive User Rating (Requires Login) */}
                     <div className="mt-3">
                         <StarRating
                             userRating={userRating}
-                            onRate={onRate}
+                            onRate={handleRate}
                         />
                     </div>
                 </div>

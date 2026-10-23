@@ -18,6 +18,7 @@ function AuthModal() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Close on Escape key
   useEffect(() => {
@@ -38,25 +39,75 @@ function AuthModal() {
     setAuthModalMode(mode);
   };
 
-  const handleSubmitSignIn = (e) => {
+  const handleSubmitSignIn = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (!password || password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      signin({ email, password });
-      setSuccess("Successfully signed in!");
+      await signin({ email: cleanEmail, password });
+      setSuccess("✓ Successfully signed in!");
+      setTimeout(() => {
+        closeAuthModal();
+        setSuccess("");
+        setError("");
+      }, 900);
     } catch (err) {
-      setError(err.message || "Failed to sign in");
+      setError(err.message || "User doesn't exist");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleSubmitSignUp = (e) => {
+  const handleSubmitSignUp = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+
+    const cleanName = name.trim();
+    const cleanEmail = email.trim();
+
+    if (!cleanName) {
+      setError("Name is required.");
+      return;
+    }
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!password || password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      signup({ name, email, password });
-      setSuccess("Account created successfully!");
+      await signup({ name: cleanName, email: cleanEmail, password });
+      setSuccess("✓ Account created successfully!");
+
+      // Transition to sign in panel after 1.2s, preserving email
+      setTimeout(() => {
+        setAuthModalMode("signin");
+        setPassword("");
+        setSuccess("✓ Account created successfully! Please sign in with your email and password.");
+        setError("");
+      }, 1200);
     } catch (err) {
-      setError(err.message || "Failed to create account");
+      setError(err.message || "Failed to create account. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -127,24 +178,26 @@ function AuthModal() {
         </div>
 
         <div className="p-6">
+          {/* Error Message Alert (Red) */}
           {error && (
             <div className="mb-4 rounded-lg bg-red-50 p-3 text-xs font-semibold text-red-600 border border-red-200">
               ⚠️ {error}
             </div>
           )}
 
+          {/* Success Message Alert (Green) */}
           {success && (
             <div className="mb-4 rounded-lg bg-emerald-50 p-3 text-xs font-semibold text-emerald-600 border border-emerald-200">
-              ✓ {success}
+              {success}
             </div>
           )}
 
-          {/* SIGN IN FORM */}
+          {/* SIGN IN FORM (Mandatory fields: Email *, Password *) */}
           {authModalMode === "signin" ? (
             <form onSubmit={handleSubmitSignIn} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700">
-                  Email
+                  Email <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -158,23 +211,26 @@ function AuthModal() {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700">
-                  Password
+                  Password <span className="text-red-500">*</span>{" "}
+                  <span className="text-[11px] font-normal text-gray-500">(min. 8 characters)</span>
                 </label>
                 <input
                   type="password"
                   required
+                  minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder="Enter your password (min 8 characters)"
                   className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-hidden focus:ring-1 focus:ring-orange-500"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-orange-600 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-orange-700 active:scale-98 cursor-pointer"
+                disabled={isSubmitting}
+                className="w-full rounded-lg bg-orange-600 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-orange-700 active:scale-98 cursor-pointer disabled:opacity-60"
               >
-                Sign In
+                {isSubmitting ? "Signing In..." : "Sign In"}
               </button>
 
               <div className="text-center pt-2 text-xs text-gray-600">
@@ -189,11 +245,11 @@ function AuthModal() {
               </div>
             </form>
           ) : (
-            /* SIGN UP (CREATE ACCOUNT) FORM */
+            /* SIGN UP (CREATE ACCOUNT) FORM (Mandatory fields: Name *, Email *, Password *) */
             <form onSubmit={handleSubmitSignUp} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700">
-                  Name
+                  Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -207,7 +263,7 @@ function AuthModal() {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700">
-                  Email
+                  Email <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -221,11 +277,13 @@ function AuthModal() {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700">
-                  Password
+                  Password <span className="text-red-500">*</span>{" "}
+                  <span className="text-[11px] font-normal text-gray-500">(min. 8 characters)</span>
                 </label>
                 <input
                   type="password"
                   required
+                  minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
@@ -235,9 +293,10 @@ function AuthModal() {
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-orange-600 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-orange-700 active:scale-98 cursor-pointer"
+                disabled={isSubmitting}
+                className="w-full rounded-lg bg-orange-600 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-orange-700 active:scale-98 cursor-pointer disabled:opacity-60"
               >
-                Create Account
+                {isSubmitting ? "Creating Account..." : "Create Account"}
               </button>
 
               <div className="text-center pt-2 text-xs text-gray-600">
