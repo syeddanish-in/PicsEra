@@ -8,7 +8,7 @@ PicsEra is a modern, responsive photography portfolio and archival print booking
 
 | Service | Platform | Live URL |
 | :--- | :--- | :--- |
-| **Frontend** | **Vercel** | [https://picsera.vercel.app](https://picsera.vercel.app) *(or [https://pics-era.vercel.app](https://pics-era.vercel.app))* |
+| **Frontend** | **Vercel** | [https://pics-era.vercel.app](https://pics-era.vercel.app) |
 | **Backend API** | **Render** | [https://picsera-backend.onrender.com](https://picsera-backend.onrender.com) |
 | **API Health Check** | **Render** | [https://picsera-backend.onrender.com/api/health](https://picsera-backend.onrender.com/api/health) |
 | **Photos Endpoint** | **Render** | [https://picsera-backend.onrender.com/api/photos](https://picsera-backend.onrender.com/api/photos) |
