@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/useAuth.js";
 import { PHOTOS } from "../data/photo.js";
 
@@ -43,7 +43,7 @@ export default function CheckoutPage() {
     updateCartItem,
   } = useAuth();
 
-  // Multi-item cart list: all photos in cart or single active photo
+  // Multi-item list: all photos in cart or single active photo
   const items =
     cart.length > 0
       ? cart.map((item) => item.photo)
@@ -51,13 +51,39 @@ export default function CheckoutPage() {
       ? [checkoutPhoto]
       : [PHOTOS[0]];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Initialize index from checkoutPhoto if present
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    if (checkoutPhoto && cart.length > 0) {
+      const idx = cart.findIndex((item) => item.photo?.id === checkoutPhoto.id);
+      return idx !== -1 ? idx : 0;
+    }
+    return 0;
+  });
+
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const lastPhotoIdRef = useRef(checkoutPhoto?.id);
+
+  // Sync index only when a different checkoutPhoto is passed from outside (e.g. from cart modal)
+  useEffect(() => {
+    if (checkoutPhoto && checkoutPhoto.id !== lastPhotoIdRef.current) {
+      lastPhotoIdRef.current = checkoutPhoto.id;
+      const idx = items.findIndex((item) => item.id === checkoutPhoto.id);
+      if (idx !== -1) {
+        setCurrentIndex(idx);
+      }
+    }
+  }, [checkoutPhoto, items]);
 
   // Per-item individual configuration dictionary: { [photoId]: { productTypeId, sizeId, quantity } }
   const [itemConfigs, setItemConfigs] = useState(() => {
     const initial = {};
-    const sourceItems = cart.length > 0 ? cart : (checkoutPhoto ? [{ photoId: checkoutPhoto.id, quantity: 1, photo: checkoutPhoto }] : []);
+    const sourceItems =
+      cart.length > 0
+        ? cart
+        : checkoutPhoto
+        ? [{ photoId: checkoutPhoto.id, quantity: 1, photo: checkoutPhoto }]
+        : [];
+
     sourceItems.forEach((cItem) => {
       initial[cItem.photoId] = {
         productTypeId: cItem.configuredType?.id || "framed_canvas",
@@ -68,34 +94,24 @@ export default function CheckoutPage() {
     return initial;
   });
 
-  // Sync itemConfigs when cart items are added/modified
+  // Keep itemConfigs in sync with cart (quantities and options)
   useEffect(() => {
     if (cart.length > 0) {
       setItemConfigs((prev) => {
         const next = { ...prev };
         cart.forEach((cItem) => {
-          if (!next[cItem.photoId]) {
-            next[cItem.photoId] = {
-              productTypeId: cItem.configuredType?.id || "framed_canvas",
-              sizeId: cItem.configuredSize?.id || "small",
-              quantity: cItem.quantity || 1,
-            };
-          }
+          next[cItem.photoId] = {
+            productTypeId:
+              cItem.configuredType?.id || next[cItem.photoId]?.productTypeId || "framed_canvas",
+            sizeId:
+              cItem.configuredSize?.id || next[cItem.photoId]?.sizeId || "small",
+            quantity: cItem.quantity || next[cItem.photoId]?.quantity || 1,
+          };
         });
         return next;
       });
     }
   }, [cart]);
-
-  // Sync index when a specific checkoutPhoto is passed from cart
-  useEffect(() => {
-    if (checkoutPhoto && cart.length > 0) {
-      const idx = cart.findIndex((item) => item.photo?.id === checkoutPhoto.id);
-      if (idx !== -1) {
-        setCurrentIndex(idx);
-      }
-    }
-  }, [checkoutPhoto, cart]);
 
   // Keep index within bounds
   const safeIndex = currentIndex >= items.length ? 0 : currentIndex;
@@ -107,6 +123,7 @@ export default function CheckoutPage() {
     sizeId: "small",
     quantity: 1,
   };
+
   const selectedType =
     PRODUCT_TYPES.find((t) => t.id === currentConfig.productTypeId) || PRODUCT_TYPES[0];
   const selectedSize =
@@ -147,11 +164,21 @@ export default function CheckoutPage() {
 
   // Arrow navigation between cart items
   const handlePrevItem = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
+    const nextIdx = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+    setCurrentIndex(nextIdx);
+    lastPhotoIdRef.current = items[nextIdx]?.id;
   };
 
   const handleNextItem = () => {
-    setCurrentIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
+    const nextIdx = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+    setCurrentIndex(nextIdx);
+    lastPhotoIdRef.current = items[nextIdx]?.id;
+  };
+
+  const handleSelectSummaryItem = (idx) => {
+    setCurrentIndex(idx);
+    lastPhotoIdRef.current = items[idx]?.id;
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Update Cart action: persists the current item's custom configuration into cart
@@ -171,7 +198,12 @@ export default function CheckoutPage() {
 
   // Calculate total order amount across all items
   const totalOrderAmount = items.reduce((sum, photo) => {
-    const cfg = itemConfigs[photo.id] || { productTypeId: "framed_canvas", sizeId: "small", quantity: 1 };
+    const cfg =
+      itemConfigs[photo.id] || {
+        productTypeId: "framed_canvas",
+        sizeId: "small",
+        quantity: 1,
+      };
     const pType = PRODUCT_TYPES.find((t) => t.id === cfg.productTypeId) || PRODUCT_TYPES[0];
     const pSize = SIZES.find((s) => s.id === cfg.sizeId) || SIZES[0];
     const pQty = cfg.quantity || 1;
@@ -218,39 +250,17 @@ export default function CheckoutPage() {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") closeCheckout();
     };
-    if (checkoutPhoto) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
+    window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [checkoutPhoto, closeCheckout]);
-
-  // Prevent background scroll when modal is active
-  useEffect(() => {
-    if (checkoutPhoto) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [checkoutPhoto]);
+  }, [closeCheckout]);
 
   if (!checkoutPhoto) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs transition-opacity duration-300 flex items-center justify-center p-2 sm:p-6"
-      onClick={closeCheckout}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div
-        className="relative w-full max-w-6xl rounded-xl bg-white text-gray-900 shadow-2xl border border-gray-200 overflow-hidden my-auto max-h-[92vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <div className="w-full rounded-2xl bg-white text-gray-900 shadow-sm border border-gray-200 overflow-hidden">
         {/* Top Bar with Navigation */}
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-3.5 bg-gray-50/70 shrink-0">
+        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 bg-gray-50/80">
           <button
             type="button"
             onClick={closeCheckout}
@@ -268,14 +278,15 @@ export default function CheckoutPage() {
             type="button"
             onClick={closeCheckout}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-200 hover:text-gray-700 transition cursor-pointer"
-            aria-label="Close dialog"
+            aria-label="Back to gallery"
+            title="Back to gallery"
           >
             ✕
           </button>
         </div>
 
-        {/* Scrollable Content Body */}
-        <div className="overflow-y-auto p-6 sm:p-10 flex-1">
+        {/* Content Body */}
+        <div className="p-6 sm:p-10">
           {/* Main 2-Column Configurator Area */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             {/* Left Column: Realistic Artwork Presentation with multi-item switch arrows */}
@@ -335,7 +346,7 @@ export default function CheckoutPage() {
                       <button
                         key={item.id || idx}
                         type="button"
-                        onClick={() => setCurrentIndex(idx)}
+                        onClick={() => handleSelectSummaryItem(idx)}
                         className={`h-2 rounded-full transition-all duration-200 cursor-pointer ${
                           idx === safeIndex
                             ? "w-6 bg-orange-600 shadow-xs"
@@ -383,10 +394,10 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* CHOOSE PRODUCT TYPE: ★ */}
+                {/* CHOOSE PRODUCT TYPE*: */}
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-800 mb-2.5">
-                    CHOOSE PRODUCT TYPE: <span className="text-orange-600">★</span>
+                    CHOOSE PRODUCT TYPE<span className="text-orange-600">*</span>:
                   </label>
 
                   <div className="grid grid-cols-3 gap-3">
@@ -480,7 +491,7 @@ export default function CheckoutPage() {
                     </button>
                   </div>
 
-                  {/* UPDATE CART Button (replaces Buy Now in configurator) */}
+                  {/* UPDATE CART Button */}
                   <button
                     type="button"
                     onClick={handleUpdateCart}
@@ -499,7 +510,7 @@ export default function CheckoutPage() {
                 <div className="pt-3.5 border-t border-gray-100 flex flex-row items-center justify-between gap-2 flex-nowrap text-xs">
                   <div className="flex flex-row items-center gap-2 flex-nowrap shrink-0">
                     {/* Fixed Rating Badge */}
-                    <span className="rounded-full bg-orange-50 border border-orange-200 px-2 py-0.5 text-xs font-bold text-orange-700 shadow-2xs whitespace-nowrap shrink-0">
+                    <span className="rounded-full bg-orange-50 border border-orange-200 px-2.5 py-0.5 text-xs font-bold text-orange-700 shadow-2xs whitespace-nowrap shrink-0">
                       ★ {(activePhoto.rating || 5.0).toFixed(1)}
                     </span>
 
@@ -596,7 +607,7 @@ export default function CheckoutPage() {
                     {/* Thumbnail & Title/Artist */}
                     <div className="flex items-center gap-4 min-w-0">
                       <div
-                        onClick={() => setCurrentIndex(idx)}
+                        onClick={() => handleSelectSummaryItem(idx)}
                         className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-lg overflow-hidden border border-gray-200 cursor-pointer shadow-2xs group"
                         title="Click to configure this print above"
                       >
@@ -613,7 +624,7 @@ export default function CheckoutPage() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <h4
-                            onClick={() => setCurrentIndex(idx)}
+                            onClick={() => handleSelectSummaryItem(idx)}
                             className="font-bold text-gray-900 truncate text-sm sm:text-base cursor-pointer hover:text-orange-600 transition"
                           >
                             {photo.title}
@@ -659,7 +670,7 @@ export default function CheckoutPage() {
 
                       <button
                         type="button"
-                        onClick={() => setCurrentIndex(idx)}
+                        onClick={() => handleSelectSummaryItem(idx)}
                         className={`text-xs font-semibold px-3 py-1 rounded-md transition cursor-pointer ${
                           isCurrent
                             ? "text-orange-700 bg-orange-100 font-bold"

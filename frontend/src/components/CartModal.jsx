@@ -14,7 +14,7 @@ function CartModal() {
   if (!isCartModalOpen) return null;
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const basePricePerPrint = 45; // Default print price
+  const basePricePerPrint = 56; // Default price for FRAMED CANVAS Small
   const subtotal = cart.reduce(
     (sum, item) => sum + item.quantity * (item.unitPrice || basePricePerPrint),
     0
@@ -115,7 +115,7 @@ function CartModal() {
                             {item.photo.title}
                           </h4>
                           <p className="text-xs text-gray-500">
-                            {item.photo.category} · Archival Fine Art Print
+                            {item.configuredType?.label || "FRAMED CANVAS"} · {item.configuredSize?.label || "Small 30 × 40 cm"}
                           </p>
                         </div>
                         <div className="text-right">

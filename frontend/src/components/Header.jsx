@@ -11,7 +11,15 @@ function Header() {
     openSavedModal,
     openCartModal,
     logout,
+    checkoutPhoto,
+    closeCheckout,
   } = useAuth();
+
+  const handleNavClick = () => {
+    if (checkoutPhoto) {
+      closeCheckout();
+    }
+  };
 
   const handleSavedClick = () => {
     if (!currentUser) {
@@ -33,7 +41,7 @@ function Header() {
     <header className="sticky top-0 z-40 bg-white shadow-md">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-8 px-6 py-4">
         {/* Logo - original markup */}
-        <a href="#home" className="text-2xl font-bold">
+        <a href="#home" onClick={handleNavClick} className="text-2xl font-bold">
           Pics<span className="text-orange-600">Era</span>
         </a>
 
@@ -41,24 +49,28 @@ function Header() {
         <nav className="hidden md:flex items-center gap-6">
           <a
             href="#home"
+            onClick={handleNavClick}
             className="relative py-1 transition-colors duration-200 hover:text-orange-600 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-200 hover:after:w-full"
           >
             Home
           </a>
           <a
             href="#portfolio"
+            onClick={handleNavClick}
             className="relative py-1 transition-colors duration-200 hover:text-orange-600 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-200 hover:after:w-full"
           >
             Portfolio
           </a>
           <a
             href="#about"
+            onClick={handleNavClick}
             className="relative py-1 transition-colors duration-200 hover:text-orange-600 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-200 hover:after:w-full"
           >
             About
           </a>
           <a
             href="#contact"
+            onClick={handleNavClick}
             className="relative py-1 transition-colors duration-200 hover:text-orange-600 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-orange-600 after:transition-all after:duration-200 hover:after:w-full"
           >
             Contact

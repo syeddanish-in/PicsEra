@@ -255,7 +255,7 @@ export function AuthProvider({ children }) {
   };
 
   // Add to cart (login required)
-  const addToCart = (photo, quantity = 1) => {
+  const addToCart = (photo, quantity = 1, options = {}) => {
     if (!currentUser) {
       setAuthModalNotice("Please sign in to add photos to your cart!");
       setAuthModalMode("signin");
@@ -274,7 +274,20 @@ export function AuthProvider({ children }) {
         };
         return next;
       } else {
-        return [...prevCart, { photoId: photo.id, quantity: qty, photo }];
+        const defaultType = options.configuredType || { id: "framed_canvas", label: "FRAMED CANVAS", priceMultiplier: 1.25 };
+        const defaultSize = options.configuredSize || { id: "small", label: "Small 30 × 40 cm", basePrice: 45 };
+        const unitPrice = options.unitPrice || Math.round(defaultSize.basePrice * (defaultType.priceMultiplier || 1.25));
+        return [
+          ...prevCart,
+          {
+            photoId: photo.id,
+            quantity: qty,
+            photo,
+            configuredType: defaultType,
+            configuredSize: defaultSize,
+            unitPrice,
+          },
+        ];
       }
     });
     return true;

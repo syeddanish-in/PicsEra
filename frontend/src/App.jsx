@@ -11,27 +11,32 @@ import { useAuth } from "./context/useAuth.js";
 import { Analytics } from "@vercel/analytics/react";
 
 function AppContent() {
-  const { currentUser } = useAuth();
+  const { currentUser, checkoutPhoto } = useAuth();
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 antialiased selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-white text-gray-900 antialiased selection:bg-orange-500 selection:text-white flex flex-col justify-between">
       {/* 1. Navigation Header with Auth, Saved & Cart Status */}
       <Header />
 
-      {/* 2. Hero Section */}
-      <Hero />
+      {/* 2. Main Page View: Either PicsEra Studio Page OR Main Gallery Portfolio */}
+      {checkoutPhoto ? (
+        <main className="flex-1 bg-gray-50/50">
+          <CheckoutPage />
+        </main>
+      ) : (
+        <main className="flex-1">
+          <Hero />
+          <MainContent key={currentUser?.email || "guest"} />
+        </main>
+      )}
 
-      {/* 3. Main Content Component (Keyed by user to reset ratings and inquiry form on logout or user switch) */}
-      <MainContent key={currentUser?.email || "guest"} />
-
-      {/* 4. Footer Component */}
+      {/* 3. Footer Component */}
       <Footer />
 
       {/* Global Modals */}
       <AuthModal />
       <SavedModal />
       <CartModal />
-      <CheckoutPage />
     </div>
   );
 }
