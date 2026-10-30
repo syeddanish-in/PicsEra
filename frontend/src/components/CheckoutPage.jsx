@@ -61,18 +61,18 @@ export default function CheckoutPage() {
   });
 
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const lastPhotoIdRef = useRef(checkoutPhoto?.id);
+  const externalPhotoIdRef = useRef(checkoutPhoto?.id);
 
-  // Sync index only when a different checkoutPhoto is passed from outside (e.g. from cart modal)
+  // Sync index ONLY when a different checkoutPhoto is passed from outside
   useEffect(() => {
-    if (checkoutPhoto && checkoutPhoto.id !== lastPhotoIdRef.current) {
-      lastPhotoIdRef.current = checkoutPhoto.id;
+    if (checkoutPhoto && checkoutPhoto.id !== externalPhotoIdRef.current) {
+      externalPhotoIdRef.current = checkoutPhoto.id;
       const idx = items.findIndex((item) => item.id === checkoutPhoto.id);
       if (idx !== -1) {
         setCurrentIndex(idx);
       }
     }
-  }, [checkoutPhoto, items]);
+  }, [checkoutPhoto?.id, items]);
 
   // Per-item individual configuration dictionary: { [photoId]: { productTypeId, sizeId, quantity } }
   const [itemConfigs, setItemConfigs] = useState(() => {
@@ -164,20 +164,15 @@ export default function CheckoutPage() {
 
   // Arrow navigation between cart items
   const handlePrevItem = () => {
-    const nextIdx = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
-    setCurrentIndex(nextIdx);
-    lastPhotoIdRef.current = items[nextIdx]?.id;
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
   };
 
   const handleNextItem = () => {
-    const nextIdx = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
-    setCurrentIndex(nextIdx);
-    lastPhotoIdRef.current = items[nextIdx]?.id;
+    setCurrentIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
   };
 
   const handleSelectSummaryItem = (idx) => {
     setCurrentIndex(idx);
-    lastPhotoIdRef.current = items[idx]?.id;
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -245,14 +240,21 @@ export default function CheckoutPage() {
   // Dynamic unit price for active photo
   const unitPrice = Math.round(selectedSize.basePrice * selectedType.priceMultiplier);
 
-  // Close on Escape key press
+  // Close on Escape key press, navigate with ArrowLeft / ArrowRight
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") closeCheckout();
+      if (items.length > 1) {
+        if (e.key === "ArrowLeft") {
+          setCurrentIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
+        } else if (e.key === "ArrowRight") {
+          setCurrentIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
+        }
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeCheckout]);
+  }, [items.length, closeCheckout]);
 
   if (!checkoutPhoto) return null;
 
@@ -296,12 +298,16 @@ export default function CheckoutPage() {
                 {items.length > 1 && (
                   <button
                     type="button"
-                    onClick={handlePrevItem}
-                    className="absolute -left-4 sm:-left-6 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-800 hover:text-orange-600 hover:border-orange-400 hover:shadow-xl transition cursor-pointer active:scale-90"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handlePrevItem();
+                    }}
+                    className="absolute -left-3 sm:-left-6 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-md hover:shadow-lg border border-gray-200 text-gray-800 hover:text-orange-600 hover:border-orange-400 transition cursor-pointer active:scale-90"
                     title="Previous photo in cart"
                     aria-label="Previous item"
                   >
-                    <span className="text-2xl font-bold leading-none select-none">‹</span>
+                    <span className="text-2xl font-bold leading-none select-none pointer-events-none">‹</span>
                   </button>
                 )}
 
@@ -328,12 +334,16 @@ export default function CheckoutPage() {
                 {items.length > 1 && (
                   <button
                     type="button"
-                    onClick={handleNextItem}
-                    className="absolute -right-4 sm:-right-6 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-800 hover:text-orange-600 hover:border-orange-400 hover:shadow-xl transition cursor-pointer active:scale-90"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleNextItem();
+                    }}
+                    className="absolute -right-3 sm:-right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-md hover:shadow-lg border border-gray-200 text-gray-800 hover:text-orange-600 hover:border-orange-400 transition cursor-pointer active:scale-90"
                     title="Next photo in cart"
                     aria-label="Next item"
                   >
-                    <span className="text-2xl font-bold leading-none select-none">›</span>
+                    <span className="text-2xl font-bold leading-none select-none pointer-events-none">›</span>
                   </button>
                 )}
               </div>
