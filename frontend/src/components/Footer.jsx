@@ -20,14 +20,9 @@ export default function Footer() {
 
     return (
         <footer className="border-t border-gray-200 bg-linear-to-b from-white to-gray-50 text-gray-700">
-            {/* Top Interactive Banner: Back to Top & Quick CTA */}
+            {/* Top Interactive Banner: Back to Top */}
             <div className="border-b border-gray-100 bg-gray-50/80 px-6 py-4">
-                <div className="mx-auto flex max-w-7xl items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-gray-500">
-                        <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span className="font-medium">PostgreSQL (Neon) & Express API Connected</span>
-                    </div>
-
+                <div className="mx-auto flex max-w-7xl items-center justify-end text-xs">
                     <button
                         type="button"
                         onClick={scrollToTop}
@@ -181,15 +176,11 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Bottom Legal & Tech Bar */}
+                {/* Bottom Legal Bar */}
                 <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-8 sm:flex-row text-xs text-gray-500">
                     <p>
-                        &copy; {currentYear} Pics<span className="font-bold text-orange-600">Era</span>. All rights reserved. Archival prints certified museum-grade.
+                        &copy; {currentYear} Pics<span className="font-bold text-orange-600">Era</span>. All rights reserved.
                     </p>
-
-                    <div className="flex items-center gap-6">
-                        <span className="text-gray-400">Built with React 19, Tailwind CSS & Neon Postgres</span>
-                    </div>
                 </div>
             </div>
         </footer>
