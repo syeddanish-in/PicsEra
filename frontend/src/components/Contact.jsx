@@ -3,7 +3,7 @@ import { useAuth } from "../context/useAuth.js";
 import { api } from "../api.js";
 
 export default function Contact() {
-    const { currentUser, openAuthModal, clearCart } = useAuth();
+    const { currentUser, clearCart } = useAuth();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [type, setType] = useState("portrait");
@@ -21,28 +21,29 @@ export default function Contact() {
         e.preventDefault();
         setSubmitError("");
 
-        // User cannot submit without login
-        if (!currentUser) {
-            openAuthModal("signin", "Please sign in to submit your booking inquiry!");
+        const targetName = name || currentUser?.name || "";
+        const targetEmail = email || currentUser?.email || "";
+
+        if (!targetName.trim() || !targetEmail.trim()) {
+            setSubmitError("Please provide your name and email address.");
             return;
         }
 
         setIsSubmitting(true);
         try {
             await api.submitInquiry({
-                name: displayName,
-                email: displayEmail,
+                name: targetName,
+                email: targetEmail,
                 type,
                 budget,
                 message,
             });
-            setSubmittedUser({ name: displayName, email: displayEmail });
+            setSubmittedUser({ name: targetName, email: targetEmail });
             setSubmitted(true);
-            // Inquiry sent: clear cart for this user
             clearCart();
         } catch (err) {
             console.warn("Backend error submitting inquiry:", err.message);
-            setSubmittedUser({ name: displayName, email: displayEmail });
+            setSubmittedUser({ name: targetName, email: targetEmail });
             setSubmitted(true);
             clearCart();
         } finally {
@@ -69,26 +70,13 @@ export default function Contact() {
                 </div>
 
                 <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-md sm:p-8">
-                    {!currentUser && (
-                        <div className="mb-6 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs font-medium text-amber-800">
-                            <span>💡 You must be signed in to submit a booking inquiry.</span>
-                            <button
-                                type="button"
-                                onClick={() => openAuthModal("signin", "Please sign in to submit your booking inquiry!")}
-                                className="font-bold text-orange-600 underline hover:text-orange-700 cursor-pointer"
-                            >
-                                Sign In Now
-                            </button>
-                        </div>
-                    )}
-
                     {submitError && (
                         <div className="mb-4 rounded-lg bg-red-50 p-3 text-xs font-semibold text-red-600 border border-red-200">
                             ⚠️ {submitError}
                         </div>
                     )}
 
-                    {currentUser && submitted && submittedUser ? (
+                    {submitted && submittedUser ? (
                         <div className="py-8 text-center" role="status">
                             <div className="text-4xl text-green-600">✓</div>
                             <h3 className="mt-3 text-xl font-semibold text-gray-900">
@@ -103,6 +91,8 @@ export default function Contact() {
                                 onClick={() => {
                                     setSubmitted(false);
                                     setSubmittedUser(null);
+                                    setName("");
+                                    setEmail("");
                                     setMessage("");
                                 }}
                                 className="mt-5 rounded-lg bg-orange-600 px-5 py-3 font-semibold text-white hover:bg-orange-700 cursor-pointer"
