@@ -64,6 +64,7 @@ app.get("/api/health", async (req, res) => {
   res.json({
     status: "ok",
     service: "PicsEra API",
+    version: "1.2.0-stripe",
     database: dbStatus,
     timestamp: new Date().toISOString(),
   });
