@@ -290,6 +290,12 @@ export function AuthProvider({ children }) {
     );
   };
 
+  const updateCartItem = (photoId, updates) => {
+    setCart((prev) =>
+      prev.map((item) => (item.photoId === photoId ? { ...item, ...updates } : item))
+    );
+  };
+
   const removeFromCart = (photoId) => {
     setCart((prev) => prev.filter((item) => item.photoId !== photoId));
   };
@@ -317,6 +323,7 @@ export function AuthProvider({ children }) {
         totalCartCount,
         addToCart,
         updateCartQuantity,
+        updateCartItem,
         removeFromCart,
         clearCart,
         signin,
