@@ -141,7 +141,7 @@ router.post("/create-session", requireAuth, async (req, res) => {
         },
         quantity: item.quantity,
       })),
-      success_url: `${frontendUrl}/order/success?session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
+      success_url: `${frontendUrl}/?session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
       cancel_url: `${frontendUrl}?checkout=cancelled`,
       shipping_address_collection: {
         allowed_countries: ["US", "CA", "GB", "AE", "AU", "DE", "FR", "IN"],
