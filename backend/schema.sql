@@ -46,3 +46,39 @@ CREATE TABLE IF NOT EXISTS inquiries (
   message TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 5. Orders Table
+-- Stores one row per purchase with Stripe checkout integration
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  stripe_session_id VARCHAR(255) UNIQUE,
+  stripe_payment_intent_id VARCHAR(255),
+  total_amount NUMERIC(10, 2) NOT NULL,
+  currency VARCHAR(10) DEFAULT 'usd',
+  status VARCHAR(50) DEFAULT 'pending',
+  customer_email VARCHAR(255),
+  shipping_address JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 6. Order Items Table
+-- Stores itemized prints and options purchased in an order
+CREATE TABLE IF NOT EXISTS order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  photo_id INTEGER REFERENCES photos(id) ON DELETE SET NULL,
+  title VARCHAR(255) NOT NULL,
+  product_type VARCHAR(100) NOT NULL,
+  size VARCHAR(100) NOT NULL,
+  unit_price NUMERIC(10, 2) NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  subtotal NUMERIC(10, 2) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Performance Indexes
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_stripe_session ON orders(stripe_session_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);

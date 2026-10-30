@@ -6,6 +6,8 @@ import authRoutes from "./routes/auth.js";
 import photosRoutes from "./routes/photos.js";
 import savedRoutes from "./routes/saved.js";
 import inquiriesRoutes from "./routes/inquiries.js";
+import checkoutRoutes from "./routes/checkout.js";
+import webhookRoutes from "./routes/webhook.js";
 
 dotenv.config();
 
@@ -32,6 +34,10 @@ app.use(
     credentials: true,
   })
 );
+
+// Mount Stripe Webhook with raw body parsing BEFORE express.json()
+// Required so stripe.webhooks.constructEvent can verify cryptographic signature
+app.use("/api/webhook", express.raw({ type: "application/json" }), webhookRoutes);
 
 app.use(express.json());
 
@@ -68,6 +74,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/photos", photosRoutes);
 app.use("/api/saved", savedRoutes);
 app.use("/api/inquiries", inquiriesRoutes);
+app.use("/api/checkout", checkoutRoutes);
 
 // 404 Handler
 app.use((req, res) => {

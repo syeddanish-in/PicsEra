@@ -84,4 +84,20 @@ export const api = {
       body: JSON.stringify(inquiryData),
     });
   },
+
+  // Checkout & Payments API (Stripe Test Mode)
+  createCheckoutSession: async (items) => {
+    return request("/checkout/create-session", {
+      method: "POST",
+      body: JSON.stringify({ items }),
+    });
+  },
+
+  getOrder: async (orderId) => {
+    return request(`/checkout/order/${orderId}`);
+  },
+
+  verifySession: async (sessionId) => {
+    return request(`/checkout/verify-session/${sessionId}`);
+  },
 };

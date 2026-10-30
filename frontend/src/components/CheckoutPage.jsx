@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/useAuth.js";
 import { PHOTOS } from "../data/photo.js";
+import { api } from "../api.js";
 
 const PRODUCT_TYPES = [
   {
@@ -62,6 +63,8 @@ export default function CheckoutPage() {
   });
 
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(null);
   const externalPhotoIdRef = useRef(checkoutPhoto?.id);
 
   // Sync index ONLY when a different checkoutPhoto is passed from outside
@@ -222,6 +225,55 @@ export default function CheckoutPage() {
     const pUnitPrice = Math.round(pSize.basePrice * pType.priceMultiplier);
     return sum + pUnitPrice * pQty;
   }, 0);
+
+  // Buy Now with Stripe Checkout
+  const handleBuyNow = async () => {
+    if (!currentUser) {
+      openAuthModal("signin", "Please sign in to complete your checkout with Stripe!");
+      return;
+    }
+
+    if (items.length === 0) {
+      setCheckoutError("Your cart is empty.");
+      return;
+    }
+
+    setIsSubmittingOrder(true);
+    setCheckoutError(null);
+
+    try {
+      // Build server-validated line items (never send browser-computed prices)
+      const payloadItems = items.map((photo) => {
+        const cfg =
+          itemConfigs[photo.id] || {
+            productTypeId: "framed_canvas",
+            sizeId: "small",
+            quantity: 1,
+          };
+        return {
+          photoId: photo.id,
+          productTypeId: cfg.productTypeId,
+          sizeId: cfg.sizeId,
+          quantity: cfg.quantity || 1,
+        };
+      });
+
+      const res = await api.createCheckoutSession(payloadItems);
+
+      if (res && res.sessionUrl) {
+        // Redirect to Stripe's hosted Checkout page
+        window.location.href = res.sessionUrl;
+      } else {
+        throw new Error("Unable to establish Stripe Checkout session.");
+      }
+    } catch (err) {
+      console.error("Checkout initiation error:", err);
+      setCheckoutError(
+        err.message || "Failed to initiate payment session. Please verify backend Stripe configuration."
+      );
+      setIsSubmittingOrder(false);
+    }
+  };
 
   // Ratings synchronized per user
   const [userRatings, setUserRatings] = useState(() => {
@@ -756,15 +808,31 @@ export default function CheckoutPage() {
                 <p className="text-xs text-gray-500 mt-1">
                   Ready to hang fine-art prints with museum-grade archival quality
                 </p>
+                {checkoutError && (
+                  <p className="mt-2 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded p-2">
+                    ⚠️ {checkoutError}
+                  </p>
+                )}
               </div>
 
               <div>
                 <button
                   type="button"
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 py-3.5 px-8 rounded-lg text-sm sm:text-base font-bold uppercase tracking-wider bg-orange-600 hover:bg-orange-700 text-white shadow-md transition cursor-pointer active:scale-95"
+                  onClick={handleBuyNow}
+                  disabled={isSubmittingOrder}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 py-3.5 px-8 rounded-lg text-sm sm:text-base font-bold uppercase tracking-wider bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white shadow-md transition cursor-pointer active:scale-95 disabled:cursor-not-allowed"
                 >
-                  <span>💳</span>
-                  <span>Buy Now (${totalOrderAmount}.00)</span>
+                  {isSubmittingOrder ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <span>Redirecting to Stripe...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>💳</span>
+                      <span>Buy Now (${totalOrderAmount}.00)</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
