@@ -41,6 +41,7 @@ export default function CheckoutPage() {
     toggleSavePhoto,
     cart,
     updateCartItem,
+    removeFromCart,
   } = useAuth();
 
   // Multi-item list: all photos in cart or single active photo
@@ -176,6 +177,22 @@ export default function CheckoutPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleRemoveItem = (e, photoId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (removeFromCart) {
+      removeFromCart(photoId);
+    }
+    setItemConfigs((prev) => {
+      const next = { ...prev };
+      delete next[photoId];
+      return next;
+    });
+    if (currentIndex >= items.length - 1 && currentIndex > 0) {
+      setCurrentIndex((prev) => Math.max(0, prev - 1));
+    }
+  };
+
   // Update Cart action: persists the current item's custom configuration into cart
   const handleUpdateCart = () => {
     const unitPrice = Math.round(selectedSize.basePrice * selectedType.priceMultiplier);
@@ -256,7 +273,28 @@ export default function CheckoutPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [items.length, closeCheckout]);
 
-  if (!checkoutPhoto) return null;
+  if (!checkoutPhoto && items.length === 0) return null;
+
+  if (items.length === 0) {
+    return (
+      <div className="w-full max-w-2xl mx-auto px-4 py-16 text-center">
+        <div className="rounded-2xl bg-white border border-gray-200 p-8 shadow-sm">
+          <span className="text-5xl">🛒</span>
+          <h3 className="mt-4 text-lg font-bold text-gray-900">Your cart is empty</h3>
+          <p className="mt-1 text-sm text-gray-500 max-w-sm mx-auto">
+            All items have been removed from your order. Return to the gallery to explore and add fine art prints.
+          </p>
+          <button
+            type="button"
+            onClick={closeCheckout}
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-orange-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-orange-700 transition cursor-pointer shadow-xs"
+          >
+            ← Return to Gallery
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
@@ -667,8 +705,8 @@ export default function CheckoutPage() {
                       </div>
                     </div>
 
-                    {/* Right: Item Total & Edit Config Action */}
-                    <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-100">
+                    {/* Right: Item Total & Action Buttons */}
+                    <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2.5 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-100">
                       <div className="text-left sm:text-right">
                         <span className="text-base sm:text-lg font-extrabold text-gray-900">
                           ${pItemTotal}.00
@@ -678,17 +716,28 @@ export default function CheckoutPage() {
                         </p>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => handleSelectSummaryItem(idx)}
-                        className={`text-xs font-semibold px-3 py-1 rounded-md transition cursor-pointer ${
-                          isCurrent
-                            ? "text-orange-700 bg-orange-100 font-bold"
-                            : "text-gray-600 hover:text-orange-600 hover:bg-gray-100"
-                        }`}
-                      >
-                        {isCurrent ? "Configuring ↑" : "Edit Config ↑"}
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={(e) => handleRemoveItem(e, photo.id)}
+                          className="text-xs font-medium text-red-600 hover:text-red-700 hover:underline cursor-pointer"
+                          title="Remove this print from your order"
+                        >
+                          Remove
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleSelectSummaryItem(idx)}
+                          className={`text-xs font-semibold px-3 py-1 rounded-md transition cursor-pointer ${
+                            isCurrent
+                              ? "text-orange-700 bg-orange-100 font-bold"
+                              : "text-gray-600 hover:text-orange-600 hover:bg-gray-100"
+                          }`}
+                        >
+                          {isCurrent ? "Configuring ↑" : "Edit Config ↑"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
