@@ -6,7 +6,7 @@ export default function Contact() {
     const { currentUser, clearCart } = useAuth();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [type, setType] = useState("portrait");
+    const [type, setType] = useState("commission");
     const [budget, setBudget] = useState("");
     const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
@@ -139,20 +139,20 @@ export default function Contact() {
 
                             <fieldset>
                                 <legend className="mb-3 text-sm font-semibold text-gray-800">
-                                    Photography Type
+                                    Project & Shoot Type
                                 </legend>
-                                <div className="grid grid-cols-3 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                                     {[
-                                        ["portrait", "👤", "Portrait"],
-                                        ["product", "📷", "Product"],
-                                        ["event", "✨", "Event"],
+                                        ["commission", "🎨", "Fine Art Commission"],
+                                        ["architecture", "🏛️", "Architecture & Spaces"],
+                                        ["licensing", "🖼️", "Custom Print & Licensing"],
                                     ].map(([val, icon, label]) => (
                                         <label
                                             key={val}
-                                            className={`cursor-pointer rounded-lg border p-3 text-center transition ${
+                                            className={`cursor-pointer rounded-lg border p-3 text-center transition flex flex-col items-center justify-center ${
                                                 type === val
-                                                    ? "border-orange-500 bg-orange-50 text-orange-700 font-semibold"
-                                                    : "border-gray-200 hover:border-orange-300"
+                                                    ? "border-orange-500 bg-orange-50 text-orange-700 font-semibold shadow-2xs"
+                                                    : "border-gray-200 bg-white hover:border-orange-300 text-gray-700"
                                             }`}
                                         >
                                             <input
@@ -164,7 +164,7 @@ export default function Contact() {
                                                 className="sr-only"
                                             />
                                             <span className="block text-xl">{icon}</span>
-                                            <span className="mt-1 block text-sm font-medium">
+                                            <span className="mt-1.5 block text-xs sm:text-sm font-medium leading-snug">
                                                 {label}
                                             </span>
                                         </label>
