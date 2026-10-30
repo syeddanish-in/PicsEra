@@ -90,7 +90,7 @@ function MainContent() {
                         Featured Photographs
                     </h2>
                     <p className="mt-3 text-gray-600">
-                        Explore our collection of photography, powered by our live PostgreSQL database.
+                        Explore our curated collection of fine art photography and archival prints.
                     </p>
                 </div>
 
@@ -116,7 +116,7 @@ function MainContent() {
                 {isLoading ? (
                     <div className="py-20 text-center">
                         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-orange-600 border-r-transparent"></div>
-                        <p className="mt-3 text-sm text-gray-500">Loading photographs from database...</p>
+                        <p className="mt-3 text-sm text-gray-500">Loading photographs...</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
