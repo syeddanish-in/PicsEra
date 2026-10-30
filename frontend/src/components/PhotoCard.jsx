@@ -8,7 +8,7 @@ function PhotoCard({
     userRating,
     onRate,
 }) {
-    const { isPhotoSaved, toggleSavePhoto, addToCart, currentUser, openAuthModal } = useAuth();
+    const { isPhotoSaved, toggleSavePhoto, addToCart, currentUser, openAuthModal, openCheckout } = useAuth();
     const isSaved = isPhotoSaved(photo.id);
     const [addedAlert, setAddedAlert] = useState(false);
 
@@ -21,11 +21,7 @@ function PhotoCard({
     const handleAddToCart = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const success = addToCart(photo, 1);
-        if (success && currentUser) {
-            setAddedAlert(true);
-            setTimeout(() => setAddedAlert(false), 1600);
-        }
+        openCheckout(photo);
     };
 
     // User must be logged in to rate/like photos
@@ -40,7 +36,11 @@ function PhotoCard({
     return (
         <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xs transition duration-300 hover:-translate-y-1 hover:shadow-xl">
             {/* Photo & Overlays */}
-            <div className="group relative h-64 overflow-hidden bg-gray-100">
+            <div
+                onClick={() => openCheckout(photo)}
+                className="group relative h-64 overflow-hidden bg-gray-100 cursor-pointer"
+                title="Click to view & customize archival print"
+            >
                 <img
                     src={photo.image}
                     alt={photo.alt || photo.title}
@@ -115,19 +115,15 @@ function PhotoCard({
                         </span>
                     </button>
 
-                    {/* Add to Cart Button */}
+                    {/* Order / Buy Print Button */}
                     <button
                         type="button"
                         onClick={handleAddToCart}
-                        className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs font-semibold transition-all duration-200 cursor-pointer shadow-xs active:scale-95 ${
-                            addedAlert
-                                ? "bg-emerald-600 text-white"
-                                : "bg-orange-600 text-white hover:bg-orange-700"
-                        }`}
-                        title="Add to cart for future reference"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs font-semibold transition-all duration-200 cursor-pointer shadow-xs active:scale-95 bg-orange-600 text-white hover:bg-orange-700"
+                        title="Configure size, frame & order archival print"
                     >
-                        <span>{addedAlert ? "✓" : "🛒"}</span>
-                        <span>{addedAlert ? "Added!" : "Add to Cart"}</span>
+                        <span>🛒</span>
+                        <span>Buy Print</span>
                     </button>
                 </div>
             </div>

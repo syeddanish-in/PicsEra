@@ -55,6 +55,18 @@ export function AuthProvider({ children }) {
   const [authModalNotice, setAuthModalNotice] = useState("");
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [checkoutPhoto, setCheckoutPhoto] = useState(null);
+
+  const openCheckout = (photo = null) => {
+    const target = photo || cart[0]?.photo || PHOTOS[0];
+    setCheckoutPhoto(target);
+    setIsCartModalOpen(false);
+    setIsSavedModalOpen(false);
+  };
+
+  const closeCheckout = () => {
+    setCheckoutPhoto(null);
+  };
 
   // Helper to load saved photos from real backend API
   const refreshSavedPhotos = useCallback(async () => {
@@ -320,8 +332,11 @@ export function AuthProvider({ children }) {
         openSavedModal: () => setIsSavedModalOpen(true),
         closeSavedModal: () => setIsSavedModalOpen(false),
         isCartModalOpen,
-        openCartModal: () => setIsCartModalOpen(true),
+        openCartModal: () => openCheckout(),
         closeCartModal: () => setIsCartModalOpen(false),
+        checkoutPhoto,
+        openCheckout,
+        closeCheckout,
       }}
     >
       {children}

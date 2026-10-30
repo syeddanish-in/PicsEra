@@ -5,6 +5,7 @@ import Footer from "./components/Footer.jsx";
 import AuthModal from "./components/AuthModal.jsx";
 import SavedModal from "./components/SavedModal.jsx";
 import CartModal from "./components/CartModal.jsx";
+import CheckoutPage from "./components/CheckoutPage.jsx";
 import AuthProvider from "./context/AuthContext.jsx";
 import { useAuth } from "./context/useAuth.js";
 import { Analytics } from "@vercel/analytics/react";
@@ -30,6 +31,7 @@ function AppContent() {
       <AuthModal />
       <SavedModal />
       <CartModal />
+      <CheckoutPage />
     </div>
   );
 }
