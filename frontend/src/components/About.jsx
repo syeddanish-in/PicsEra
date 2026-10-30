@@ -14,7 +14,7 @@ export default function About() {
                 <div className="mt-8 text-center text-base leading-7 text-gray-600 sm:mt-10 sm:text-lg sm:leading-8">
                     <p>
                         Welcome to PicsEra. With over a decade behind the camera, I specialize in
-                        portrait, architectural, culinary, and lifestyle photography. Every image in
+                        portrait, architectural, landscape, and fine-art photography. Every image in
                         this gallery is available as a signed, archival-quality print crafted with
                         museum-grade paper and pigment inks designed to last generations.
                     </p>

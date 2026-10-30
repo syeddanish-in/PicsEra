@@ -133,16 +133,13 @@ export default function Footer() {
                         </h4>
                         <ul className="mt-4 space-y-2.5 text-sm">
                             <li>
-                                <a href="#portfolio" className="text-gray-600 transition hover:text-orange-600">Portrait</a>
-                            </li>
-                            <li>
-                                <a href="#portfolio" className="text-gray-600 transition hover:text-orange-600">Culinary & Food</a>
-                            </li>
-                            <li>
-                                <a href="#portfolio" className="text-gray-600 transition hover:text-orange-600">Automotive Design</a>
-                            </li>
-                            <li>
                                 <a href="#portfolio" className="text-gray-600 transition hover:text-orange-600">Nature & Wildlife</a>
+                            </li>
+                            <li>
+                                <a href="#portfolio" className="text-gray-600 transition hover:text-orange-600">Architecture</a>
+                            </li>
+                            <li>
+                                <a href="#portfolio" className="text-gray-600 transition hover:text-orange-600">Portrait</a>
                             </li>
                             <li>
                                 <a href="#portfolio" className="text-gray-600 transition hover:text-orange-600">Product Studio</a>

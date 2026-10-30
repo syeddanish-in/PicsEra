@@ -1,174 +1,118 @@
 export const CATEGORIES = [
     'All',
-    'Portrait',
-    'Product',
-    'Automotive',
     'Nature',
-    'Culinary',
-    'Lifestyle'
+    'Architecture',
+    'Portrait',
+    'Product'
 ];
 
 export const PHOTOS = [
     {
         id: 1,
-        title: "Culinary Artistry",
-        category: "Culinary",
-        description: "A beautifully styled dessert composition where color, texture, and presentation come together.",
-        image: "/images/collections/allyson-beaucourt-m_uSWBJWr0s-unsplash.jpg",
-        alt: "Elegant culinary photography composition",
+        title: "Green Aurora Borealis",
+        category: "Nature",
+        description: "A breathtaking green aurora borealis reflecting across a tranquil pond under a starry night sky.",
+        image: "https://images.unsplash.com/photo-1793084879291-ff4a8399fc70?auto=format&fit=crop&w=1200&q=80",
+        alt: "Green aurora borealis over dark pond",
         aspect: "landscape"
     },
     {
         id: 2,
-        title: "Sweet Indulgence",
-        category: "Culinary",
-        description: "A rich dessert captured with warm tones and careful attention to detail.",
-        image: "/images/collections/danna-tukhfatullina-food-photographer-stylist-Mzy-OjtCI70-unsplash.jpg",
-        alt: "Beautiful natural food photography scene",
-        aspect: "portrait"
+        title: "Calm Alpine Lake",
+        category: "Nature",
+        description: "A serene turquoise lake nestled between lush green alpine mountain ranges.",
+        image: "https://images.unsplash.com/photo-1793174305066-394292e296e1?auto=format&fit=crop&w=1200&q=80",
+        alt: "Calm lake between green mountains",
+        aspect: "landscape"
     },
     {
         id: 3,
-        title: "Modern Accessories",
-        category: "Product",
-        description: "A clean product composition highlighting form, color, and contemporary style.",
-        image: "/images/collections/giorgio-trovato-K62u25Jk6vo-unsplash.jpg",
-        alt: "Creative architectural photography",
-        aspect: "square"
+        title: "Figures in Motion",
+        category: "Portrait",
+        description: "A classical stone sculpture capturing dynamic human forms, emotion, and fluid motion.",
+        image: "https://images.unsplash.com/photo-1792808376551-ac7337ace372?auto=format&fit=crop&w=1200&q=80",
+        alt: "Stone sculpture of figures in motion",
+        aspect: "portrait"
     },
     {
         id: 4,
-        title: "Red in Motion",
-        category: "Product",
-        description: "A bold red sneaker photographed to emphasize its shape, energy, and modern design.",
-        image: "/images/collections/ryan-waring-164_6wVEHfI-unsplash.jpg",
-        alt: "Detailed footwear product photography composition",
-        aspect: "square"
+        title: "Dubrovnik Rooftops & Dome",
+        category: "Architecture",
+        description: "Historic terracotta rooftops and the cathedral dome of Dubrovnik overlooking the Adriatic coastline.",
+        image: "https://images.unsplash.com/photo-1790182517779-e0adeb9cf40f?auto=format&fit=crop&w=1200&q=80",
+        alt: "Dubrovnik rooftops and dome in Croatia",
+        aspect: "portrait"
     },
     {
         id: 5,
-        title: "Wildlife Majesty",
+        title: "Vibrant Mandarin Duck",
         category: "Nature",
-        description: "A stunning wildlife photograph showcasing the beauty and power of nature.",
-        image: "/images/collections/artur-stanulevich-IVeq0IzOYaE-unsplash.jpg",
-        alt: "Natural beauty captured in wildlife photography",
+        description: "A male mandarin duck with iridescent multi-colored plumage gliding peacefully on water.",
+        image: "https://images.unsplash.com/photo-1793104059271-6d97514f1ff1?auto=format&fit=crop&w=1200&q=80",
+        alt: "Male mandarin duck with vibrant plumage",
         aspect: "landscape"
     },
     {
         id: 6,
-        title: "Automotive Lines",
-        category: "Automotive",
-        description: "A striking automotive photograph focused on curves, reflections, and the character of the vehicle.",
-        image: "/images/collections/campbell-3ZUsNJhi_Ik-unsplash.jpg",
-        alt: "A memorable automotive moment captured through photography",
+        title: "Bodrum Amphitheater",
+        category: "Architecture",
+        description: "Ancient stone amphitheater curved tiers bathed in warm Aegean sunlight in Bodrum, Türkiye.",
+        image: "https://images.unsplash.com/photo-1790791272461-9b2f40349efe?auto=format&fit=crop&w=1200&q=80",
+        alt: "Empty amphitheater seats in Bodrum",
         aspect: "landscape"
     },
     {
         id: 7,
-        title: "Quiet Portrait",
-        category: "Portrait",
-        description: "A serene portrait capturing the essence of the subject in a calm and composed manner.",
-        image: "/images/collections/fabian-bachli-Iq11eskt5AQ-unsplash.jpg",
-        alt: "Photography showing light and shadow portrait",
-        aspect: "portrait"
+        title: "Milky Way Stargazer",
+        category: "Nature",
+        description: "A nocturnal silhouette gazing upwards into the shimmering celestial band of the Milky Way galaxy.",
+        image: "https://images.unsplash.com/photo-1793253261613-b2ef8835db38?auto=format&fit=crop&w=1200&q=80",
+        alt: "Person pointing at milky way galaxy",
+        aspect: "square"
     },
     {
         id: 8,
-        title: "Home Stories",
-        category: "Lifestyle",
-        description: "A warm lifestyle photograph capturing the comfort, character, and beauty of an everyday home.",
-        image: "/images/collections/francesca-tosolini-tHkJAMcO3QE-unsplash.jpg",
-        alt: "Emotional interior photography portrait",
-        aspect: "landscape"
+        title: "Urban Portrait Silhouette",
+        category: "Portrait",
+        description: "A refined portrait study exploring natural shadow play, contrast, and modern urban styling.",
+        image: "https://images.unsplash.com/photo-1792160452241-f030229426dc?auto=format&fit=crop&w=1200&q=80",
+        alt: "Modern urban portrait composition",
+        aspect: "portrait"
     },
     {
         id: 9,
-        title: "Creative Celebration",
-        category: "Lifestyle",
-        description: "A lively event scene capturing atmosphere, color, and the energy of a shared moment.",
-        image: "/images/collections/jakob-dalbjorn-cuKJre3nyYc-unsplash.jpg",
-        alt: "Balanced creative event photography composition",
+        title: "Atmospheric Horizon",
+        category: "Nature",
+        description: "Panoramic view of distant horizons bathed in dramatic atmospheric hues and gentle cloud layers.",
+        image: "https://images.unsplash.com/photo-1793242217410-d3a50f071383?auto=format&fit=crop&w=1200&q=80",
+        alt: "Atmospheric landscape horizon view",
         aspect: "landscape"
     },
     {
         id: 10,
-        title: "Wellness Essentials",
+        title: "Minimalist Geometry",
         category: "Product",
-        description: "Clean cosmetic and wellness product styling bathed in natural ambient light.",
-        image: "/images/collections/kaio-frizzera-jlO1iNwfPIg-unsplash.jpg",
-        alt: "Warm and detailed product photography",
-        aspect: "square"
+        description: "A minimalist studio composition focusing on clean lines, delicate textures, and tonal balance.",
+        image: "https://images.unsplash.com/photo-1779243829348-85bf26cff23b?auto=format&fit=crop&w=1200&q=80",
+        alt: "Minimalist geometric still life study",
+        aspect: "portrait"
     },
     {
         id: 11,
-        title: "Motion & Design",
-        category: "Automotive",
-        description: "A dynamic automotive composition exploring movement, form, and visual perspective.",
-        image: "/images/collections/marek-pospisil-oUBjd22gF6w-unsplash.jpg",
-        alt: "Modern automotive photography composition",
+        title: "Golden Desert Dunes",
+        category: "Nature",
+        description: "Sweeping warm sand dunes and graceful wind-swept ridges bathed in soft golden hour light.",
+        image: "https://images.unsplash.com/photo-1706823871410-ed8b01faef7e?auto=format&fit=crop&w=1200&q=80",
+        alt: "Golden desert dunes and ridges",
         aspect: "landscape"
     },
     {
         id: 12,
-        title: "Into the Wild",
-        category: "Nature",
-        description: "A peaceful travel scene that captures the sense of discovery and escape found in distant places.",
-        image: "/images/collections/mesut-kaya-eOcyhe5-9sQ-unsplash.jpg",
-        alt: "Travel and landscape texture photography",
+        title: "Grand Mosque Colonnade",
+        category: "Architecture",
+        description: "The grand marble arches and reflective pools of the Sheikh Zayed Grand Mosque in Abu Dhabi.",
+        image: "https://images.unsplash.com/photo-1512632578888-169bbbc64f33?auto=format&fit=crop&w=1200&q=80",
+        alt: "Sheikh Zayed Grand Mosque architecture",
         aspect: "landscape"
-    },
-    {
-        id: 13,
-        title: "Modern Living",
-        category: "Lifestyle",
-        description: "A refined architectural scene showcasing clean lines, space, and contemporary design.",
-        image: "/images/collections/nathan-dumlao-4_mJ1TbMK8A-unsplash.jpg",
-        alt: "Everyday lifestyle and architecture photography",
-        aspect: "landscape"
-    },
-    {
-        id: 14,
-        title: "Behind the Moment",
-        category: "Lifestyle",
-        description: "An intimate lifestyle photograph capturing a natural moment with an authentic sense of place.",
-        image: "/images/collections/pexels-cottonbro-10619446.jpg",
-        alt: "Candid lifestyle photography",
-        aspect: "portrait"
-    },
-    {
-        id: 15,
-        title: "Creative Expression",
-        category: "Portrait",
-        description: "A visually striking composition where color, movement, and personality create a memorable frame.",
-        image: "/images/collections/pexels-felicity-tai-7964179.jpg",
-        alt: "Creative artistic portrait photography",
-        aspect: "portrait"
-    },
-    {
-        id: 16,
-        title: "Natural Perspective",
-        category: "Portrait",
-        description: "A distinctive portrait captured with an emphasis on character, expression, and natural surroundings.",
-        image: "/images/collections/pexels-fernando-capetillo-94107723-38167588.jpg",
-        alt: "Natural portrait photography outdoors",
-        aspect: "portrait"
-    },
-    {
-        id: 17,
-        title: "Contemporary Perspective",
-        category: "Portrait",
-        description: "A modern visual composition exploring perspective, atmosphere, and the relationship between subject and space.",
-        image: "/images/collections/pexels-kooldark-17049791.jpg",
-        alt: "Human-focused portrait photography",
-        aspect: "portrait"
-    },
-    {
-        id: 18,
-        title: "Skincare Essentials",
-        category: "Product",
-        description: "A calm, minimalist product still-life emphasizing clean aesthetic presentation.",
-        image: "/images/collections/pexels-sales-trust-162265874-10825663.jpg",
-        alt: "Distinctive skincare product photography",
-        aspect: "square"
     }
 ];

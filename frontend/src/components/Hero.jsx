@@ -5,8 +5,8 @@ function Hero() {
       className="relative flex h-112.5 items-center"
     >
       <img
-        src="./images/collections/mesut-kaya-eOcyhe5-9sQ-unsplash.jpg"
-        alt="Photography portfolio"
+        src="https://images.unsplash.com/photo-1793253261613-b2ef8835db38?auto=format&fit=crop&w=1920&q=80"
+        alt="Milky way galaxy photography portfolio"
         className="absolute h-full w-full object-cover"
       />
 
