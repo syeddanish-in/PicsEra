@@ -332,7 +332,10 @@ export function AuthProvider({ children }) {
         openSavedModal: () => setIsSavedModalOpen(true),
         closeSavedModal: () => setIsSavedModalOpen(false),
         isCartModalOpen,
-        openCartModal: () => openCheckout(),
+        openCartModal: () => {
+          setIsCartModalOpen(true);
+          setCheckoutPhoto(null);
+        },
         closeCartModal: () => setIsCartModalOpen(false),
         checkoutPhoto,
         openCheckout,
